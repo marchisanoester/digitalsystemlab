@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Selected work — Digital Systems Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fbfbfa; --ink: #1b1b1a; --ink-soft: #3c3c39;
+    --muted: #5f5f5a; --muted-2: #76766f; --faint: #9a9a93;
+    --teal: #54b394; --orange: #e9674c; --yellow: #edbb52;
+    --line: rgba(20,20,20,0.10); --line-soft: rgba(20,20,20,0.07);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .work {
+    position: relative;
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(72px, 11vh, 140px) clamp(22px, 5vw, 64px) clamp(80px, 12vh, 150px);
+  }
+  /* grid relief, top-left + bottom, same vocabulary as the other sections */
+  .work::before, .work::after {
+    content: ""; pointer-events: none; position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(27,27,26,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27,27,26,0.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .work::before {
+    -webkit-mask-image: radial-gradient(88% 64% at 88% 6%, #000 0%, transparent 60%);
+    mask-image: radial-gradient(88% 64% at 88% 6%, #000 0%, transparent 60%);
+  }
+  .work::after {
+    -webkit-mask-image: radial-gradient(96% 46% at 26% 100%, #000 0%, transparent 64%);
+    mask-image: radial-gradient(96% 46% at 26% 100%, #000 0%, transparent 64%);
+  }
+  .work > * { position: relative; z-index: 1; }
+
+  /* ===== header ===== */
+  .eyebrow {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint);
+  }
+  .eyebrow .dots { display: flex; gap: 4px; }
+  .eyebrow .dots span { width: 6px; height: 6px; border-radius: 50%; }
+  .head { text-align: center; margin-top: 20px; padding-bottom: clamp(40px, 6vh, 64px); }
+  h2 {
+    margin: 0 auto; max-width: 18ch; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: clamp(34px, 4.8vw, 58px); line-height: 1.05; letter-spacing: -0.02em;
+    color: var(--ink); text-wrap: balance;
+  }
+  h2 em { font-style: italic; color: var(--ink-soft); }
+  .head .sub {
+    margin: 18px auto 0; max-width: 46ch; font-size: 16.5px; line-height: 1.6; color: var(--muted);
+  }
+
+  /* ===== group label ===== */
+  .group-label {
+    display: flex; align-items: center; gap: 13px; margin: clamp(34px,5vh,52px) 0 22px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: var(--muted-2);
+  }
+  .group-label::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+  .group-label .n { color: var(--teal); }
+
+  /* ===== work grid ===== */
+  .grid { display: grid; gap: clamp(20px, 2.6vw, 32px); }
+  .grid.tools { grid-template-columns: repeat(3, 1fr); }
+  .grid.webs { grid-template-columns: repeat(3, 1fr); }
+
+  .case { display: flex; flex-direction: column; gap: 16px; }
+  /* the framed screen */
+  .frame {
+    position: relative; border-radius: 14px; overflow: hidden;
+    border: 1px solid var(--line); background: #fff;
+    box-shadow: 0 18px 40px -28px rgba(20,20,20,0.4);
+  }
+  .frame .bar {
+    height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 12px;
+    border-bottom: 1px solid var(--line-soft); background: #f6f6f4;
+  }
+  .frame .bar i { width: 8px; height: 8px; border-radius: 50%; background: #d9d9d3; display: block; }
+  .frame .bar .url {
+    margin-left: 8px; height: 13px; flex: 1; max-width: 150px; border-radius: 7px;
+    background: #ececea; font-family: 'IBM Plex Mono', monospace; font-size: 8px;
+    color: #a6a69e; display: flex; align-items: center; padding: 0 8px; letter-spacing: 0.04em;
+  }
+  /* both groups use the real-browser-capture proportion (~1900×845): wide & short,
+     so tool mock-ups and site clips share one frame shape */
+  .stage { aspect-ratio: 1900 / 845; position: relative; background: #fcfcfb; overflow: hidden; }
+  .grid.webs .stage { aspect-ratio: 1900 / 845; }
+
+  .case .meta { display: flex; flex-direction: column; gap: 7px; }
+  .case .tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--teal); width: fit-content;
+  }
+  .case .tag.collab { color: var(--muted-2); }
+  .case .tag .collab { color: var(--muted-2); }
+  .case h3 {
+    margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: 22px; line-height: 1.18; letter-spacing: -0.01em; color: var(--ink);
+  }
+  .case p { margin: 0; font-size: 14.5px; line-height: 1.5; color: var(--muted); }
+  .case .visit {
+    margin-top: 2px; font-size: 13.5px; color: var(--muted-2); text-decoration: none;
+    font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--line); width: fit-content; padding-bottom: 2px;
+    transition: color .2s, border-color .2s;
+  }
+  .case .visit:hover { color: var(--ink); border-color: rgba(20,20,20,0.5); }
+  .case .visit.ph { opacity: 0.55; pointer-events: none; }
+
+  /* ============================================================= */
+  /* mini-mockup illustrations (HTML/CSS) — the mechanism, not chrome */
+  /* ============================================================= */
+  @media (prefers-reduced-motion: no-preference) {
+    .anim-rows i, .anim-tip, .anim-count, .anim-notify, .anim-scan { will-change: transform, opacity; }
+  }
+
+  /* — Invoice reader: named files drop into a folder → an Excel sheet auto-fills — */
+  .mk-invoice { position: absolute; inset: 0; display: flex; align-items: center; gap: 6%; padding: 9% 8%; }
+  .mk-invoice .infolder { position: relative; width: 26%; height: 72%; flex-shrink: 0; }
+  .mk-invoice .folder { position: absolute; left: 50%; bottom: 3%; transform: translateX(-50%); width: 72%; height: auto; }
+  .mk-invoice .file {
+    position: absolute; left: 8%; width: 84%; top: 6%;
+    background: #fff; border: 1px solid var(--line); border-radius: 4px;
+    box-shadow: 0 4px 11px -6px rgba(0,0,0,.4);
+    font-family: 'IBM Plex Mono', monospace; font-size: 6px; color: #6f6f69; letter-spacing: 0.01em;
+    padding: 4px 5px 4px 14px; opacity: 0; white-space: nowrap; overflow: hidden;
+  }
+  .mk-invoice .file::before {
+    content: ""; position: absolute; left: 5px; top: 50%; transform: translateY(-50%);
+    width: 6px; height: 8px; border-radius: 1.5px; background: var(--teal);
+  }
+  .mk-invoice .file.f1 { animation: fileFly1 6.5s ease infinite; }
+  .mk-invoice .file.f2 { animation: fileFly2 6.5s ease infinite; }
+  .mk-invoice .file.f3 { animation: fileFly3 6.5s ease infinite; }
+  @keyframes fileFly1 { 0% { opacity: 0; top: -16%; transform: scale(1); } 4% { opacity: 1; } 18% { opacity: 1; top: 6%; transform: scale(1); } 25% { opacity: 0; top: 52%; transform: scale(.38); } 100% { opacity: 0; top: 52%; transform: scale(.38); } }
+  @keyframes fileFly2 { 0%, 30% { opacity: 0; top: -16%; transform: scale(1); } 34% { opacity: 1; } 48% { opacity: 1; top: 6%; transform: scale(1); } 55% { opacity: 0; top: 52%; transform: scale(.38); } 100% { opacity: 0; } }
+  @keyframes fileFly3 { 0%, 60% { opacity: 0; top: -16%; transform: scale(1); } 64% { opacity: 1; } 78% { opacity: 1; top: 6%; transform: scale(1); } 85% { opacity: 0; top: 52%; transform: scale(.38); } 100% { opacity: 0; } }
+  .mk-invoice .excel {
+    flex: 1; align-self: center; height: 88%;
+    border: 1px solid var(--line); border-radius: 4px; overflow: hidden; background: #fff;
+    display: grid; grid-template-columns: 13px 1fr 1fr 0.82fr; grid-auto-rows: 1fr;
+  }
+  .mk-invoice .excel .cell {
+    border-right: 1px solid #eeeeeb; border-bottom: 1px solid #eeeeeb;
+    display: flex; align-items: center; padding: 0 4px; min-width: 0; overflow: hidden;
+  }
+  .mk-invoice .excel .cell.rownum { background: #f5f5f2; justify-content: center; padding: 0; }
+  .mk-invoice .excel .cell.head { background: #f0f0ed; }
+  .mk-invoice .excel .hx { font-family: 'IBM Plex Mono', monospace; font-size: 6px; color: #8f8f88; letter-spacing: 0.02em; }
+  .mk-invoice .excel .rn { font-family: 'IBM Plex Mono', monospace; font-size: 6px; color: #b2b2aa; }
+  .mk-invoice .excel .v { opacity: 0; }
+  .mk-invoice .excel .vt { font-family: 'IBM Plex Mono', monospace; font-size: 6.5px; color: #5f5f5a; white-space: nowrap; }
+  .mk-invoice .excel .vamt { font-family: 'IBM Plex Mono', monospace; font-size: 6.5px; color: #2f7d63; font-weight: 500; white-space: nowrap; }
+  .mk-invoice .excel .vbar { display: block; height: 3px; width: 80%; border-radius: 2px; background: #e0e0da; }
+  .mk-invoice .excel .v.r1 { animation: rowVal1 6.5s ease infinite; }
+  .mk-invoice .excel .v.r2 { animation: rowVal2 6.5s ease infinite; }
+  .mk-invoice .excel .v.r3 { animation: rowVal3 6.5s ease infinite; }
+  @keyframes rowVal1 { 0%, 22% { opacity: 0; } 28% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes rowVal2 { 0%, 50% { opacity: 0; } 56% { opacity: 1; } 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes rowVal3 { 0%, 80% { opacity: 0; } 86% { opacity: 1; } 94% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* — Mortgage calculator: answering questions → "Calculating…" → a donut result — */
+  .mk-calc2 { position: absolute; inset: 0; padding: 9% 11%; display: flex; flex-direction: column; gap: 9px; }
+  .mk-calc2 .qrow { display: flex; align-items: center; gap: 8px; opacity: 0; }
+  .mk-calc2 .qrow .qlab { height: 5px; border-radius: 3px; background: #e0e0da; flex-shrink: 0; }
+  .mk-calc2 .qrow.q1 .qlab { width: 24%; } .mk-calc2 .qrow.q2 .qlab { width: 30%; } .mk-calc2 .qrow.q3 .qlab { width: 22%; }
+  .mk-calc2 .opts { display: flex; gap: 5px; }
+  .mk-calc2 .op { width: 20px; height: 9px; border-radius: 5px; background: #ececea; }
+  .mk-calc2 .field { height: 10px; flex: 1; max-width: 58%; border-radius: 4px; background: #f0f0ed; border: 1px solid var(--line-soft); position: relative; overflow: hidden; }
+  .mk-calc2 .field .typed { position: absolute; left: 4px; top: 50%; transform: translateY(-50%); height: 4px; border-radius: 2px; background: var(--teal); width: 0; }
+  .mk-calc2 .qrow.q1 { animation: cq1 7s ease infinite; }
+  .mk-calc2 .qrow.q2 { animation: cq2 7s ease infinite; }
+  .mk-calc2 .qrow.q3 { animation: cq3 7s ease infinite; }
+  @keyframes cq1 { 0% { opacity: 0; transform: translateY(4px); } 5% { opacity: 1; transform: none; } 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes cq2 { 0%, 10% { opacity: 0; transform: translateY(4px); } 15% { opacity: 1; transform: none; } 92% { opacity: 1; } 100% { opacity: 0; } }
+  @keyframes cq3 { 0%, 20% { opacity: 0; transform: translateY(4px); } 25% { opacity: 1; transform: none; } 92% { opacity: 1; } 100% { opacity: 0; } }
+  .mk-calc2 .op.sel1 { animation: opSel1 7s ease infinite; }
+  .mk-calc2 .op.sel2 { animation: opSel2 7s ease infinite; }
+  @keyframes opSel1 { 0%, 9% { background: #ececea; } 13% { background: var(--teal); } 92% { background: var(--teal); } 100% { background: #ececea; } }
+  @keyframes opSel2 { 0%, 17% { background: #ececea; } 21% { background: var(--teal); } 92% { background: var(--teal); } 100% { background: #ececea; } }
+  .mk-calc2 .field .typed { animation: typeIn 7s ease infinite; }
+  @keyframes typeIn { 0%, 27% { width: 0; } 36% { width: 66%; } 92% { width: 66%; } 100% { width: 0; } }
+  .mk-calc2 .result { position: relative; margin-top: auto; height: 40%; }
+  .mk-calc2 .calcing {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.1em; color: var(--muted-2);
+    opacity: 0; animation: calcing 7s ease infinite;
+  }
+  @keyframes calcing { 0%, 40% { opacity: 0; } 45% { opacity: 1; } 56% { opacity: 1; } 61% { opacity: 0; } 100% { opacity: 0; } }
+  .mk-calc2 .donutwrap {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 9px;
+    opacity: 0; animation: donutShow 7s ease infinite;
+  }
+  @keyframes donutShow { 0%, 60% { opacity: 0; } 66% { opacity: 1; } 94% { opacity: 1; } 100% { opacity: 0; } }
+  .mk-calc2 .donut { width: 40px; height: 40px; position: relative; flex-shrink: 0; }
+  .mk-calc2 .donut svg { width: 100%; height: 100%; display: block; transform: rotate(-90deg); }
+  .mk-calc2 .donut .prog { animation: donutFill 7s ease infinite; }
+  @keyframes donutFill { 0%, 64% { stroke-dashoffset: 87.96; } 82% { stroke-dashoffset: 15.83; } 94% { stroke-dashoffset: 15.83; } 100% { stroke-dashoffset: 87.96; } }
+  .mk-calc2 .donut .pct {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: 'Newsreader', serif; font-size: 10.5px; color: var(--ink); font-weight: 500;
+  }
+  .mk-calc2 .qualify { display: flex; flex-direction: column; gap: 2px; }
+  .mk-calc2 .qualify b { font-family: 'Hanken Grotesk', sans-serif; font-size: 10.5px; color: var(--ink); font-weight: 600; }
+  .mk-calc2 .qualify span { font-family: 'IBM Plex Mono', monospace; font-size: 8px; color: var(--teal); letter-spacing: 0.04em; }
+
+  /* — Glossary extension: highlighted term + tooltip — */
+  .mk-gloss { position: absolute; inset: 0; padding: 13% 12%; display: flex; flex-direction: column; gap: 9px; }
+  .mk-gloss .ln { height: 6px; border-radius: 4px; background: #e7e7e2; }
+  .mk-gloss .ln.w1 { width: 100%; } .mk-gloss .ln.w2 { width: 88%; } .mk-gloss .ln.w3 { width: 94%; } .mk-gloss .ln.w4 { width: 70%; }
+  .mk-gloss .term-line { display: flex; align-items: center; gap: 6px; }
+  .mk-gloss .term-line .pre { height: 6px; width: 28%; border-radius: 4px; background: #e7e7e2; }
+  .mk-gloss .term {
+    height: 8px; width: 22%; border-radius: 3px; background: rgba(84,179,148,0.25);
+    border-bottom: 2px solid var(--teal); position: relative;
+    animation: termSel 4.6s ease infinite;
+  }
+  @keyframes termSel {
+    0%, 8% { background: rgba(84,179,148,0.22); }
+    12% { background: rgba(84,179,148,0.62); }
+    16% { background: rgba(84,179,148,0.22); }
+    20% { background: rgba(84,179,148,0.72); }
+    28%, 82% { background: rgba(84,179,148,0.5); }
+    92%, 100% { background: rgba(84,179,148,0.22); }
+  }
+  .mk-gloss .term-line .post { height: 6px; flex: 1; border-radius: 4px; background: #e7e7e2; }
+  .mk-gloss .tip {
+    position: absolute; left: 44%; top: 12%; width: 44%;
+    background: #1b1b1a; border-radius: 8px; padding: 9px 10px;
+    box-shadow: 0 12px 26px -12px rgba(0,0,0,.55);
+    display: flex; flex-direction: column; gap: 5px;
+    transform-origin: left bottom; animation: tipPop 4.6s ease infinite;
+  }
+  .mk-gloss .tip::after {
+    content: ""; position: absolute; left: 18px; bottom: -5px; width: 10px; height: 10px;
+    background: #1b1b1a; transform: rotate(45deg);
+  }
+  .mk-gloss .tip b { height: 5px; width: 40%; border-radius: 3px; background: var(--teal); }
+  .mk-gloss .tip i { height: 4px; border-radius: 3px; background: rgba(255,255,255,0.4); }
+  .mk-gloss .tip i.t1 { width: 90%; } .mk-gloss .tip i.t2 { width: 72%; }
+  @keyframes tipPop { 0%, 24% { opacity: 0; transform: scale(0.9) translateY(4px); } 30%, 82% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: scale(0.96); } }
+
+  /* — landing wireframe previews — */
+  .mk-land { position: absolute; inset: 0; padding: 9%; display: flex; flex-direction: column; gap: 7px; }
+  .mk-land .lhero { height: 34%; border-radius: 6px; background: linear-gradient(135deg, #efefec, #e6e6e1); position: relative; overflow: hidden; }
+  .mk-land .lhero::after { content: ""; position: absolute; left: 12%; top: 30%; width: 44%; height: 8px; border-radius: 4px; background: #cfcfc8; box-shadow: 0 16px 0 -2px #d8d8d1; }
+  .mk-land .lhero .cta { position: absolute; left: 12%; bottom: 18%; width: 28%; height: 10px; border-radius: 5px; background: var(--accent, var(--teal)); }
+  .mk-land .lrow { display: flex; gap: 7px; flex: 1; }
+  .mk-land .lrow .col { flex: 1; border-radius: 5px; background: #efefec; }
+  .mk-land .lrow .col .cap { height: 4px; margin: 8px; border-radius: 3px; background: #d6d6cf; }
+  .mk-land.v2 .lhero { background: linear-gradient(135deg, #edeeee, #e4e7e6); }
+  .mk-land.v3 .lhero { background: linear-gradient(135deg, #efece9, #e8e2dc); }
+
+  /* image-slot stages (real screenshots dropped by the user) — graded for a
+     uniform feel across cards; true color returns on hover */
+  .stage > image-slot { width: 100%; height: 100%; display: block; }
+  /* unify all dropped screenshots with one muted grade — keeps color but drops the
+     loud differences between shots. Applied to the image part so placeholders stay
+     clean, and always on (works the same on desktop and mobile, no hover needed). */
+  .stage > image-slot::part(image) {
+    filter: saturate(0.6) brightness(1.04) contrast(0.95) sepia(0.09);
+  }
+  /* looping clip of a site's entrance animation — same muted grade as the stills */
+  .stage > video.clip {
+    width: 100%; height: 100%; display: block; object-fit: cover; background: #fff;
+    filter: saturate(0.6) brightness(1.04) contrast(0.95) sepia(0.09);
+  }
+  .stage .slot-hint {
+    position: absolute; left: 50%; bottom: 9px; transform: translateX(-50%); z-index: 2;
+    font-family: 'IBM Plex Mono', monospace; font-size: 8.5px; letter-spacing: 0.08em;
+    color: var(--faint); pointer-events: none; white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mk-invoice .file { animation: none; opacity: 0; }
+    .mk-invoice .file.f3 { opacity: 1; top: 6%; }
+    .mk-invoice .excel .v { animation: none; opacity: 1; }
+    .mk-gloss .tip, .mk-gloss .term { animation: none; }
+    .mk-gloss .tip { opacity: 1; }
+    .mk-calc2 .qrow { opacity: 1; animation: none; }
+    .mk-calc2 .op.sel1, .mk-calc2 .op.sel2 { background: var(--teal); animation: none; }
+    .mk-calc2 .field .typed { width: 66%; animation: none; }
+    .mk-calc2 .calcing { display: none; }
+    .mk-calc2 .donutwrap { opacity: 1; animation: none; }
+    .mk-calc2 .donut .prog { stroke-dashoffset: 15.83; animation: none; }
+  }
+
+  @media (max-width: 900px) {
+    .grid.tools, .grid.webs { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 600px) {
+    .work { padding: 50px clamp(20px,5vw,30px) 60px; }
+    .head { margin-top: 16px; padding-bottom: 34px; }
+    h2 { font-size: 28px; }
+    .head .sub { font-size: 15px; }
+    .grid.tools, .grid.webs { grid-template-columns: 1fr; gap: 26px; }
+    .case h3 { font-size: 20px; }
+  }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fbfbfa"></rect><rect x="24" y="30" width="52" height="40" rx="4" fill="none" stroke="#1b1b1a" stroke-width="2.5"></rect><rect x="24" y="30" width="52" height="9" rx="4" fill="#54b394"></rect><rect x="32" y="48" width="22" height="3" rx="1.5" fill="#9a9a93"></rect><rect x="32" y="56" width="32" height="3" rx="1.5" fill="#9a9a93"></rect></svg>
+</template>
+
+<section class="work">
+  <div class="eyebrow">
+    <span class="dots">
+      <span style="background:#54b394"></span>
+      <span style="background:#e9674c"></span>
+      <span style="background:#edbb52"></span>
+    </span>
+    <span>02 — Selected work</span>
+  </div>
+
+  <div class="head">
+    <h2>Small, real, and <em>working</em>.</h2>
+    <p class="sub">A few examples of systems and sites we've actually shipped — described by what they do, not by inflated numbers.</p>
+  </div>
+
+  <!-- ===== Tools & systems ===== -->
+  <div class="group-label"><span class="n">01</span> Some tools &amp; systems we've built</div>
+  <div class="grid tools">
+
+    <article class="case">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i></div>
+        <div class="stage">
+          <div class="mk-invoice">
+            <div class="infolder">
+              <div class="file f1">invoice_018</div>
+              <div class="file f2">invoice_019</div>
+              <div class="file f3">invoice_020</div>
+              <svg class="folder" viewBox="0 0 64 46" fill="none" aria-hidden="true">
+                <path d="M3 9 h15 l4 4 h36 a3 3 0 0 1 3 3 v24 a3 3 0 0 1 -3 3 H3 a3 3 0 0 1 -3 -3 V12 a3 3 0 0 1 3 -3 Z" fill="#eceae5" stroke="#d6d6d0" stroke-width="1"></path>
+                <path d="M1.5 19 h61 v18 a3 3 0 0 1 -3 3 H4.5 a3 3 0 0 1 -3 -3 Z" fill="#fafaf8" stroke="#dcdcd5" stroke-width="1"></path>
+                <rect x="1.5" y="19" width="61" height="2.4" rx="1" fill="#54b394" opacity="0.45"></rect>
+              </svg>
+            </div>
+            <div class="excel">
+              <div class="cell rownum head"></div>
+              <div class="cell head"><span class="hx">Date</span></div>
+              <div class="cell head"><span class="hx">Supplier</span></div>
+              <div class="cell head"><span class="hx">Total</span></div>
+
+              <div class="cell rownum"><span class="rn">1</span></div>
+              <div class="cell"><span class="v vt r1">06/12</span></div>
+              <div class="cell"><span class="v vbar r1"></span></div>
+              <div class="cell"><span class="v vamt r1">€1,240</span></div>
+
+              <div class="cell rownum"><span class="rn">2</span></div>
+              <div class="cell"><span class="v vt r2">06/13</span></div>
+              <div class="cell"><span class="v vbar r2"></span></div>
+              <div class="cell"><span class="v vamt r2">€890</span></div>
+
+              <div class="cell rownum"><span class="rn">3</span></div>
+              <div class="cell"><span class="v vt r3">06/15</span></div>
+              <div class="cell"><span class="v vbar r3"></span></div>
+              <div class="cell"><span class="v vamt r3">€2,310</span></div>
+
+              <div class="cell rownum"><span class="rn">4</span></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+              <div class="cell"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Automation tool</span>
+        <h3>Invoice reader</h3>
+        <p>Drop a folder of invoices and each line is read and written straight into a clean spreadsheet — no manual typing.</p>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span class="url">calculator</span></div>
+        <div class="stage">
+          <div class="mk-calc2">
+            <div class="qrow q1">
+              <span class="qlab"></span>
+              <span class="opts"><span class="op"></span><span class="op sel1"></span><span class="op"></span></span>
+            </div>
+            <div class="qrow q2">
+              <span class="qlab"></span>
+              <span class="opts"><span class="op sel2"></span><span class="op"></span></span>
+            </div>
+            <div class="qrow q3">
+              <span class="qlab"></span>
+              <span class="field"><span class="typed"></span></span>
+            </div>
+            <div class="result">
+              <span class="calcing">Calculating…</span>
+              <div class="donutwrap">
+                <div class="donut">
+                  <svg viewBox="0 0 36 36">
+                    <circle cx="18" cy="18" r="14" fill="none" stroke="#ececea" stroke-width="4"></circle>
+                    <circle class="prog" cx="18" cy="18" r="14" fill="none" stroke="#54b394" stroke-width="4" stroke-linecap="round" stroke-dasharray="87.96" stroke-dashoffset="87.96"></circle>
+                  </svg>
+                  <span class="pct">82%</span>
+                </div>
+                <span class="qualify"><b>You qualify</b><span>Lead sent →</span></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Lead tool</span>
+        <h3>Mortgage-eligibility calculator</h3>
+        <p>Part of a full sales-funnel automation we built: visitors learn in seconds whether they qualify and for how much, and each warm lead is routed straight to the team by WhatsApp or email.</p>
+        <a class="visit ph" href="#">View it live →</a>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span class="url">any page</span></div>
+        <div class="stage">
+          <div class="mk-gloss">
+            <div class="ln w1"></div>
+            <div class="ln w2"></div>
+            <div class="term-line"><span class="pre"></span><span class="term"></span><span class="post"></span></div>
+            <div class="ln w3"></div>
+            <div class="ln w4"></div>
+            <div class="tip"><b></b><i class="t1"></i><i class="t2"></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Browser extension</span>
+        <h3>Term-glossary extension</h3>
+        <p>A Chrome add-on that explains jargon inline — hover any tricky term on any page and a plain-language definition appears.</p>
+      </div>
+    </article>
+
+  </div>
+
+  <!-- ===== Landing & web ===== -->
+  <div class="group-label"><span class="n">02</span> Some landing &amp; web work</div>
+  <div class="grid webs">
+
+    <article class="case">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span class="url">esupwatamu.com</span></div>
+        <div class="stage">
+          <video class="clip" data-clip muted playsinline preload="metadata" poster="">
+            <source src="assets/esup-home.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Landing page</span>
+        <h3>e-Sup Tours</h3>
+        <p>A landing for an African excursions company — the kind of arrival animation that makes a small operator feel like a brand.</p>
+        <a class="visit" href="https://www.esupwatamu.com/" target="_blank" rel="noopener">View site →</a>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span class="url">foxplan.es</span></div>
+        <div class="stage">
+          <video class="clip" data-clip data-rate="1" muted playsinline preload="metadata" poster="">
+            <source src="assets/foxplan.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Web app <span class="collab">— Collaboration</span></span>
+        <h3>Foxplan</h3>
+        <p>A platform that matches a city's experiences to your tastes and free time — and to the free time of the friends and family you're connected with.</p>
+        <a class="visit" href="https://foxplan.es/" target="_blank" rel="noopener">Visit →</a>
+      </div>
+    </article>
+
+    <article class="case">
+      <div class="frame">
+        <div class="bar"><i></i><i></i><i></i><span class="url">garodagecko.com</span></div>
+        <div class="stage">
+          <video class="clip" data-clip data-rate="1" muted playsinline preload="metadata" poster="">
+            <source src="assets/gecko.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+      <div class="meta">
+        <span class="tag">Landing page</span>
+        <h3>Gecko Resort</h3>
+        <p>The portal to a little African paradise, to rest your days.</p>
+        <a class="visit" href="https://garodagecko.com/" target="_blank" rel="noopener">View site →</a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<script src="image-slot.js"></script>
+<script>
+  /* play each clip only while it's on screen — keeps the page calm and saves CPU.
+     clips play once, slowed down, and freeze on the last frame (no loop) */
+  (function () {
+    var clips = document.querySelectorAll('video[data-clip]');
+    if (!clips.length) return;
+    var rateOf = function (v) { return parseFloat(v.dataset.rate) || 0.5; }; // per-clip; default slowed
+    clips.forEach(function (v) {
+      var r = rateOf(v);
+      v.playbackRate = r;
+      v.addEventListener('loadedmetadata', function () { v.playbackRate = r; });
+      v.dataset.done = '';
+    });
+    if (!('IntersectionObserver' in window)) {
+      clips.forEach(function (v) { v.play().catch(function(){}); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        var v = e.target;
+        if (e.isIntersecting && v.dataset.done !== '1') {
+          v.playbackRate = rateOf(v);
+          v.play().catch(function(){});
+        } else if (!e.isIntersecting && v.dataset.done !== '1') {
+          v.pause();
+        }
+      });
+    }, { threshold: 0.35 });
+    clips.forEach(function (v) {
+      v.addEventListener('ended', function () { v.dataset.done = '1'; }); // freeze on last frame
+      io.observe(v);
+    });
+  })();
+</script>
+</body>
+</html>

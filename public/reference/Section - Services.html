@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Services — Digital Systems Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fbfbfa; --ink: #1b1b1a; --ink-soft: #3c3c39;
+    --muted: #5f5f5a; --muted-2: #76766f; --faint: #9a9a93;
+    --teal: #54b394; --orange: #e9674c; --yellow: #edbb52;
+    --line: rgba(20,20,20,0.10); --line-soft: rgba(20,20,20,0.07);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .services {
+    position: relative;
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(72px, 11vh, 140px) clamp(22px, 5vw, 64px) clamp(80px, 12vh, 150px);
+  }
+
+  /* faint grid relief, same vocabulary as the hero — born top-left AND echoed at the
+     foot of the section, so the cells flow into whatever comes next */
+  .services::before, .services::after {
+    content: ""; pointer-events: none; position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(27,27,26,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27,27,26,0.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .services::before {
+    -webkit-mask-image: radial-gradient(90% 70% at 12% 8%, #000 0%, transparent 62%);
+    mask-image: radial-gradient(90% 70% at 12% 8%, #000 0%, transparent 62%);
+  }
+  .services::after {
+    -webkit-mask-image: radial-gradient(96% 46% at 70% 100%, #000 0%, transparent 64%);
+    mask-image: radial-gradient(96% 46% at 70% 100%, #000 0%, transparent 64%);
+  }
+  .services > * { position: relative; z-index: 1; }
+
+  /* ===== section header ===== */
+  .eyebrow {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint);
+  }
+  .eyebrow .dots { display: flex; gap: 4px; }
+  .eyebrow .dots span { width: 6px; height: 6px; border-radius: 50%; }
+  .head {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    margin-top: 20px; padding-bottom: clamp(40px, 6vh, 68px);
+  }
+  h2 {
+    margin: 0; max-width: 20ch; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: clamp(34px, 4.8vw, 60px); line-height: 1.04; letter-spacing: -0.02em;
+    color: var(--ink); text-wrap: balance;
+  }
+  h2 em { font-style: italic; color: var(--ink-soft); }
+  .mob-br { display: none; }
+
+  /* ===== list of services ===== */
+  .list { border-top: 1px solid var(--line); }
+  .row {
+    position: relative; border-bottom: 1px solid var(--line);
+    transition: opacity .45s ease;
+  }
+  /* scroll-highlight: rows not in focus recede */
+  .list.armed .row { opacity: 0.4; }
+  .list.armed .row.active { opacity: 1; }
+
+  .row-head {
+    display: grid; grid-template-columns: 56px minmax(0, 1fr) auto;
+    align-items: center; gap: clamp(18px, 3vw, 40px);
+    padding: clamp(26px, 3.4vw, 40px) 4px;
+    cursor: pointer; text-align: left; width: 100%;
+    background: none; border: 0; font: inherit; color: inherit;
+  }
+  .idx {
+    font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 500;
+    color: var(--faint); letter-spacing: 0.05em; transition: color .35s ease;
+  }
+  .row.active .idx { color: var(--teal); }
+
+  /* number + animated icon, stacked at the start of each row */
+  .lead { display: flex; flex-direction: column; align-items: flex-start; gap: 13px; align-self: start; padding-top: 5px; }
+  .svc-icon { width: 50px; height: 50px; color: var(--ink); }
+  .svc-icon svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .row-head:hover .svc-icon { transform: scale(1.06); }
+  .svc-icon { transition: transform .3s cubic-bezier(.2,.7,.2,1); }
+
+  /* — icon 01: process map, a pulse travelling the traced flow — */
+  .ic-map .node { fill: currentColor; }
+  .ic-map .pulse { fill: var(--teal); }
+  @keyframes mapPulse {
+    0%   { transform: translate(11px,38px); opacity: 0; }
+    9%   { opacity: 1; }
+    34%  { transform: translate(11px,20px); }
+    67%  { transform: translate(31px,20px); }
+    92%  { opacity: 1; }
+    100% { transform: translate(31px,11px); opacity: 0; }
+  }
+  .ic-map .pulse { animation: mapPulse 2.8s cubic-bezier(.5,0,.5,1) infinite; }
+
+  /* — icon 02: magnet drawing leads into its poles — */
+  .ic-magnet .tip { stroke: var(--teal); }
+  .ic-magnet .lead-dot { fill: currentColor; }
+  @keyframes magDrop {
+    0%   { transform: translateY(-7px); opacity: 0; }
+    18%  { opacity: 1; }
+    72%  { opacity: 1; }
+    100% { transform: translateY(11px); opacity: 0; }
+  }
+  .ic-magnet .d1 { animation: magDrop 2.2s ease-in infinite; }
+  .ic-magnet .d2 { animation: magDrop 2.2s ease-in .5s infinite; }
+  .ic-magnet .d3 { animation: magDrop 2.2s ease-in 1.05s infinite; }
+
+  /* — icon 03: a before/after divider sweeping a browser frame — */
+  @keyframes webSweep {
+    0%, 100% { transform: translateX(-8px); }
+    50%      { transform: translateX(8px); }
+  }
+  .ic-web .divider, .ic-web .handle { animation: webSweep 3.2s ease-in-out infinite; }
+  .ic-web .divider { stroke: var(--teal); }
+  .ic-web .handle { fill: var(--teal); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .svc-icon * { animation: none !important; }
+    .ic-map .pulse, .ic-magnet .lead-dot { opacity: 0; }
+  }
+
+  .row-title { min-width: 0; }
+  .row-title h3 {
+    margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: clamp(23px, 2.7vw, 33px); line-height: 1.12; letter-spacing: -0.015em;
+    color: var(--ink); display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  }
+  .flag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal);
+    border: 1px solid rgba(84,179,148,0.5); border-radius: 999px;
+    padding: 3px 9px; transform: translateY(-3px); white-space: nowrap;
+  }
+  .row-title .summary {
+    margin: 11px 0 0; font-size: 16.5px; line-height: 1.55; color: var(--muted); max-width: 560px;
+  }
+
+  /* the +/- toggle */
+  .toggle {
+    width: 42px; height: 42px; border-radius: 50%; align-self: start;
+    border: 1px solid var(--line); background: transparent; position: relative;
+    transition: border-color .25s, background .25s, transform .25s;
+    flex-shrink: 0;
+  }
+  .row-head:hover .toggle { border-color: rgba(84,179,148,0.6); }
+  .toggle::before, .toggle::after {
+    content: ""; position: absolute; left: 50%; top: 50%; background: var(--ink);
+    transition: transform .3s cubic-bezier(.2,.7,.2,1), opacity .3s;
+  }
+  .toggle::before { width: 13px; height: 1.5px; transform: translate(-50%, -50%); }
+  .toggle::after { width: 1.5px; height: 13px; transform: translate(-50%, -50%); }
+  .row.open .toggle { background: var(--ink); border-color: var(--ink); }
+  .row.open .toggle::before, .row.open .toggle::after { background: var(--bg); }
+  .row.open .toggle::after { transform: translate(-50%, -50%) scaleY(0); opacity: 0; }
+
+  /* ===== expand-in-place panel (max-height driven from JS for reliable easing) ===== */
+  .panel {
+    max-height: 0; overflow: hidden;
+    transition: max-height .5s cubic-bezier(.2,.7,.2,1);
+  }
+  .panel-inner { overflow: hidden; }
+  .panel-grid {
+    display: grid; grid-template-columns: 56px minmax(0,1fr);
+    gap: clamp(18px, 3vw, 40px);
+    padding: 0 4px clamp(34px, 4vw, 48px);
+    opacity: 0; transform: translateY(8px); transition: opacity .4s ease .08s, transform .4s ease .08s;
+  }
+  .row.open .panel-grid { opacity: 1; transform: none; }
+  .panel-body { max-width: 620px; }
+  .panel-body p {
+    margin: 0; font-size: 17px; line-height: 1.66; color: var(--ink-soft);
+  }
+  .examples { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .ex {
+    display: grid; grid-template-columns: auto 1fr; align-items: baseline; gap: 14px;
+    padding: 14px 17px; border: 1px solid var(--line-soft); border-radius: 12px;
+    background: rgba(255,255,255,0.5);
+  }
+  .ex .tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 9px; border-radius: 6px;
+    white-space: nowrap; align-self: center; color: #2f7d63; background: rgba(84,179,148,0.13);
+  }
+  .ex .ex-text { font-size: 15.5px; line-height: 1.5; color: var(--muted); }
+  .ex .ex-text b { color: var(--ink); font-weight: 600; }
+
+  /* ===== capabilities strip — "we also build", a slow marquee of pill-chips ===== */
+  .cap {
+    margin-top: clamp(48px, 6vh, 78px); padding-top: clamp(30px, 4vh, 44px);
+    border-top: 1px solid var(--line);
+  }
+  .cap-label {
+    display: flex; align-items: center; gap: 11px; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--faint); margin-bottom: clamp(22px, 3vh, 30px);
+  }
+  .cap-label::before, .cap-label::after {
+    content: ""; height: 1px; width: clamp(24px, 8vw, 70px); background: var(--line);
+  }
+  /* marquee viewport — fades at both edges so chips drift in and out */
+  .cap-track {
+    position: relative; overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 9%, #000 91%, transparent);
+  }
+  .cap-row {
+    display: flex; width: max-content; gap: 12px;
+    animation: capScroll 46s linear infinite;
+  }
+  .cap-track:hover .cap-row { animation-play-state: paused; }
+  @keyframes capScroll { to { transform: translateX(-50%); } }
+  @media (prefers-reduced-motion: reduce) {
+    .cap-row { animation: none; flex-wrap: wrap; width: auto; justify-content: center; }
+    .chip-cap.clone { display: none; }
+    .cap-track { -webkit-mask-image: none; mask-image: none; }
+  }
+  .chip-cap {
+    display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
+    padding: 11px 18px 11px 14px; border: 1px solid var(--line);
+    border-radius: 999px; background: rgba(255,255,255,0.55);
+    font-size: 14.5px; color: var(--ink-soft); font-weight: 500;
+  }
+  .chip-cap .cic { width: 21px; height: 21px; color: var(--ink); flex-shrink: 0; }
+  .chip-cap .cic svg { width: 100%; height: 100%; display: block; overflow: visible; }
+  .cap-accent { color: var(--teal); }
+  .cic .cap-accent { animation: capPulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+  @keyframes capPulse { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .cic .cap-accent { animation: none; opacity: 1; } }
+
+  @media (max-width: 760px) {
+    .services { padding: 46px clamp(20px, 5vw, 30px) 58px; }
+    .head { margin-top: 14px; padding-bottom: 32px; }
+    h2 { font-size: 27px; max-width: none; text-wrap: normal; }
+    .mob-br { display: inline; }
+
+    /* row: number + icon stay stacked at the left, aligned to the title's top */
+    .row-head { grid-template-columns: 46px minmax(0,1fr) auto; gap: 13px; padding: 22px 0; align-items: start; }
+    .lead { gap: 10px; padding-top: 3px; }
+    .svc-icon { width: 44px; height: 44px; }
+    .idx { font-size: 11px; }
+    .row-title h3 { font-size: 21px; gap: 8px; }
+    .flag { font-size: 9px; padding: 2px 7px; transform: translateY(-2px); }
+    .row-title .summary { font-size: 14.5px; margin-top: 9px; }
+    .toggle { width: 34px; height: 34px; }
+    .toggle::before { width: 11px; } .toggle::after { height: 11px; }
+
+    /* panel: full width under the row, no left spacer */
+    .panel-grid { grid-template-columns: 1fr; }
+    .panel-grid .spacer { display: none; }
+    .panel-body p { font-size: 15.5px; }
+    .examples { margin-top: 20px; }
+    .ex { padding: 12px 14px; gap: 11px; }
+    .ex .ex-text { font-size: 14px; }
+    .ex .tag { font-size: 9px; padding: 4px 8px; }
+
+    .collab { flex-direction: column; align-items: flex-start; gap: 13px; }
+    .cap { margin-top: 40px; padding-top: 30px; }
+    .chip-cap { font-size: 13.5px; padding: 10px 15px 10px 12px; }
+  }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fbfbfa"></rect><circle cx="34" cy="40" r="3.5" fill="#54b394"></circle><circle cx="46" cy="40" r="3.5" fill="#e9674c"></circle><circle cx="58" cy="40" r="3.5" fill="#edbb52"></circle><rect x="30" y="54" width="40" height="3" rx="1.5" fill="#1b1b1a"></rect><rect x="30" y="62" width="28" height="3" rx="1.5" fill="#9a9a93"></rect></svg>
+</template>
+
+<section class="services">
+  <div class="eyebrow">
+    <span class="dots">
+      <span style="background:#54b394"></span>
+      <span style="background:#e9674c"></span>
+      <span style="background:#edbb52"></span>
+    </span>
+    <span>01 — Services</span>
+  </div>
+
+  <div class="head">
+    <h2>Three ways we take <br class="mob-br"><em>friction</em> out of the work.</h2>
+  </div>
+
+  <div class="list" id="list">
+
+    <!-- 01 — flagship -->
+    <article class="row" data-row>
+      <button class="row-head" data-toggle aria-expanded="false">
+        <span class="lead">
+          <span class="idx">01</span>
+          <span class="svc-icon" aria-hidden="true">
+            <svg class="ic-map" viewBox="0 0 48 48" fill="none">
+              <path d="M11 38 V20 H31 V11" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" opacity="0.32"></path>
+              <circle class="node" cx="11" cy="38" r="3.1"></circle>
+              <circle class="node" cx="11" cy="20" r="3.1"></circle>
+              <circle class="node" cx="31" cy="20" r="3.1"></circle>
+              <circle class="node" cx="31" cy="11" r="3.1"></circle>
+              <circle class="pulse" cx="0" cy="0" r="2.7"></circle>
+            </svg>
+          </span>
+        </span>
+        <span class="row-title">
+          <h3>Process Mapping &amp; Solution Design <span class="flag">Flagship</span></h3>
+          <p class="summary">We map how work actually happens, find the friction, and design the simplest system that removes it.</p>
+        </span>
+        <span class="toggle" aria-hidden="true"></span>
+      </button>
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-grid">
+            <span class="spacer"></span>
+            <div class="panel-body">
+              <p>Before any code, we sit with the process, digital or non. We trace every handoff, queues, copy-pastes... the invisible work nobody documents.</p>
+              <div class="examples">
+                <div class="ex">
+                  <span class="tag">Example</span>
+                  <span class="ex-text"><b>Invoice reader.</b> Reads every new invoice the moment it lands in your folders or cloud, and writes each line straight into your spreadsheet — no manual typing.</span>
+                </div>
+                <div class="ex">
+                  <span class="tag">Example</span>
+                  <span class="ex-text"><b>Guest handover, for hotels.</b> We mapped what quietly slips through the cracks at each shift change — a promised late checkout, an allergy, a half-fixed complaint — and built a calm handover that carries every guest's context to whoever's on next.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 02 -->
+    <article class="row" data-row>
+      <button class="row-head" data-toggle aria-expanded="false">
+        <span class="lead">
+          <span class="idx">02</span>
+          <span class="svc-icon" aria-hidden="true">
+            <svg class="ic-magnet" viewBox="0 0 48 48" fill="none">
+              <path d="M16 30 V20 a8 8 0 0 1 16 0 V30" stroke="currentColor" stroke-width="3" stroke-linecap="round"></path>
+              <path class="tip" d="M16 30 v-4" stroke-width="3" stroke-linecap="round"></path>
+              <path class="tip" d="M32 30 v-4" stroke-width="3" stroke-linecap="round"></path>
+              <circle class="lead-dot d1" cx="16" cy="8" r="2.5"></circle>
+              <circle class="lead-dot d2" cx="32" cy="6" r="2.5"></circle>
+              <circle class="lead-dot d3" cx="24" cy="4" r="2.5"></circle>
+            </svg>
+          </span>
+        </span>
+        <span class="row-title">
+          <h3>Lead Magnet Design</h3>
+          <p class="summary">Interactive tools that live inside a client's funnel and turn attention into qualified leads.</p>
+        </span>
+        <span class="toggle" aria-hidden="true"></span>
+      </button>
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-grid">
+            <span class="spacer"></span>
+            <div class="panel-body">
+              <p>Not another contact form. A small tool the visitor actually wants to use — and that hands you a warm, qualified lead at the end. We design the logic, the interaction, and the flow that notifies your team the moment someone's ready.</p>
+              <div class="examples">
+                <div class="ex">
+                  <span class="tag">Example</span>
+                  <span class="ex-text"><b>Mortgage-eligibility calculator.</b> A few guided questions and the visitor sees, in seconds, whether they qualify and for how much — while the warm lead reaches your team by WhatsApp or email.</span>
+                </div>
+                <div class="ex">
+                  <span class="tag">Example</span>
+                  <span class="ex-text"><b>Before / after visualizer.</b> A tool that lets a client see the result before they commit — their hands after the spa, their car back from the body shop, the room once it's remodeled.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- 03 -->
+    <article class="row" data-row>
+      <button class="row-head" data-toggle aria-expanded="false">
+        <span class="lead">
+          <span class="idx">03</span>
+          <span class="svc-icon" aria-hidden="true">
+            <svg class="ic-web" viewBox="0 0 48 48" fill="none">
+              <rect x="7" y="9" width="34" height="30" rx="4" stroke="currentColor" stroke-width="2.2"></rect>
+              <line x1="7" y1="16" x2="41" y2="16" stroke="currentColor" stroke-width="2.2"></line>
+              <circle cx="11" cy="12.5" r="1" fill="currentColor"></circle>
+              <circle cx="14.5" cy="12.5" r="1" fill="currentColor"></circle>
+              <line x1="13" y1="23" x2="35" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.38"></line>
+              <line x1="13" y1="29" x2="29" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.38"></line>
+              <line x1="13" y1="35" x2="32" y2="35" stroke="currentColor" stroke-width="2" stroke-linecap="round" opacity="0.38"></line>
+              <line class="divider" x1="24" y1="16" x2="24" y2="39" stroke-width="2"></line>
+              <circle class="handle" cx="24" cy="27.5" r="2.7"></circle>
+            </svg>
+          </span>
+        </span>
+        <span class="row-title">
+          <h3>Web Experience Optimization</h3>
+          <p class="summary">We don't rebuild your site. We audit it for friction and remove what quietly slows people down.</p>
+        </span>
+        <span class="toggle" aria-hidden="true"></span>
+      </button>
+      <div class="panel">
+        <div class="panel-inner">
+          <div class="panel-grid">
+            <span class="spacer"></span>
+            <div class="panel-body">
+              <p>Most sites don't need a rebuild — they need the friction taken out. We read the graphic and UX detail through the same process lens, and fix what quietly costs you clarity and conversions. When a rebuild genuinely helps, we do that too.</p>
+              <div class="examples">
+                <div class="ex">
+                  <span class="tag">Example</span>
+                  <span class="ex-text"><b>Friction audit.</b> A focused pass over your existing site that returns a prioritized list of fixes — the quiet frictions costing you clarity and conversions.</span>
+                </div>
+                <div class="ex">
+                  <span class="tag">Example</span>
+                  <span class="ex-text"><b>Landing &amp; web builds.</b></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+
+  <div class="cap">
+    <div class="cap-label">We also build</div>
+    <div class="cap-track">
+      <div class="cap-row" id="capRow">
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 6h16v10H9l-4 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+            <circle class="cap-accent" cx="9" cy="11" r="1.4" fill="currentColor"></circle>
+            <circle class="cap-accent" cx="13" cy="11" r="1.4" fill="currentColor" style="animation-delay:.3s"></circle>
+            <circle class="cap-accent" cx="17" cy="11" r="1.4" fill="currentColor" style="animation-delay:.6s"></circle>
+          </svg></span>WhatsApp &amp; email automations
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M3 5l17 6.5L3 18l3-6.5L3 5z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+            <path class="cap-accent" d="M6 11.5h6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+          </svg></span>Social DM replies
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <rect x="4" y="5" width="16" height="14" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+            <line class="cap-accent" x1="12" y1="5" x2="12" y2="19" stroke="currentColor" stroke-width="1.7"></line>
+          </svg></span>Before / after visualizers
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M7 14V9a5 5 0 0 1 10 0v5" stroke="currentColor" stroke-width="1.9"></path>
+            <path class="cap-accent" d="M7 14v-3M17 14v-3" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+          </svg></span>Lead-magnet tools
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <rect x="3.5" y="5" width="17" height="14" rx="2" stroke="currentColor" stroke-width="1.7"></rect>
+            <line x1="3.5" y1="9" x2="20.5" y2="9" stroke="currentColor" stroke-width="1.7"></line>
+            <circle class="cap-accent" cx="6.3" cy="7" r="0.9" fill="currentColor"></circle>
+          </svg></span>Landing &amp; web builds
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M14.5 4.5l-3 3 2 2 3-3a4 4 0 0 1-5 5L6 18.5a1.8 1.8 0 0 1-2.5-2.5L11 8.5a4 4 0 0 1 3.5-4z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+            <circle class="cap-accent" cx="5" cy="17" r="1.1" fill="currentColor"></circle>
+          </svg></span>Internal tools &amp; MVPs
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 5h6v6H5zM5 13h6v6H5zM13 13h6v6h-6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+            <rect class="cap-accent" x="13" y="5" width="6" height="6" rx="1" fill="currentColor"></rect>
+          </svg></span>Chrome extensions
+        </span>
+        <span class="chip-cap">
+          <span class="cic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 19V5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+            <path d="M4 19h16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path>
+            <rect x="7" y="12" width="3" height="4" fill="currentColor"></rect>
+            <rect class="cap-accent" x="12" y="8" width="3" height="8" fill="currentColor"></rect>
+            <rect x="17" y="10" width="3" height="6" fill="currentColor"></rect>
+          </svg></span>Dashboards &amp; reports
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    var list = document.getElementById('list');
+    var rows = Array.prototype.slice.call(list.querySelectorAll('[data-row]'));
+
+    /* expand-in-place — accordion (one open at a time feels calmer here) */
+    rows.forEach(function (row) {
+      var btn = row.querySelector('[data-toggle]');
+      btn.addEventListener('click', function () {
+        var willOpen = !row.classList.contains('open');
+        rows.forEach(function (r) {
+          r.classList.remove('open');
+          r.querySelector('[data-toggle]').setAttribute('aria-expanded', 'false');
+        });
+        rows.forEach(function (r) { r.querySelector('.panel').style.maxHeight = null; });
+        if (willOpen) {
+          row.classList.add('open');
+          btn.setAttribute('aria-expanded', 'true');
+          var panel = row.querySelector('.panel');
+          panel.style.maxHeight = panel.querySelector('.panel-inner').scrollHeight + 'px';
+        }
+      });
+    });
+
+    /* scroll-highlight — the row whose center is nearest the viewport center is "active" */
+    var armTimer = setTimeout(function () { list.classList.add('armed'); }, 600);
+    function updateActive() {
+      var mid;
+      try {
+        var fe = window.frameElement;
+        if (fe && window.parent !== window) {
+          /* embedded in the full-landing: this iframe doesn't scroll internally,
+             so track the PARENT viewport centre, mapped into our coordinates */
+          mid = (window.parent.innerHeight / 2) - fe.getBoundingClientRect().top;
+        } else {
+          mid = window.innerHeight / 2;
+        }
+      } catch (e) { mid = window.innerHeight / 2; }
+      var best = null, bestDist = Infinity;
+      rows.forEach(function (row) {
+        var r = row.getBoundingClientRect();
+        var c = r.top + r.height / 2;
+        var d = Math.abs(c - mid);
+        if (d < bestDist) { bestDist = d; best = row; }
+      });
+      rows.forEach(function (row) { row.classList.toggle('active', row === best); });
+    }
+    var ticking = false;
+    function onScroll() {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () { updateActive(); ticking = false; });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    /* when embedded, the host forwards its scroll so the highlight can track it */
+    window.addEventListener('message', function (e) { if (e && e.data === 'host-scroll') updateActive(); });
+    window.addEventListener('resize', function () {
+      updateActive();
+      var open = list.querySelector('.row.open');
+      if (open) { var p = open.querySelector('.panel'); p.style.maxHeight = p.querySelector('.panel-inner').scrollHeight + 'px'; }
+    });
+    updateActive();
+  })();
+
+  /* capabilities marquee — duplicate the chips in-place for a seamless loop */
+  (function () {
+    var row = document.getElementById('capRow');
+    if (!row) return;
+    var chips = Array.prototype.slice.call(row.children);
+    chips.forEach(function (c) {
+      var clone = c.cloneNode(true);
+      clone.classList.add('clone');
+      clone.setAttribute('aria-hidden', 'true');
+      row.appendChild(clone);
+    });
+  })();
+</script>
+
+</body>
+</html>
