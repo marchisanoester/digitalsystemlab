@@ -64,6 +64,207 @@ textarea {
   background-size: 44px 44px;
 }
 
+/* Critical home shell styles: keep the reference landing from flashing unstyled
+   before the client component hydrates. */
+.reference-landing {
+  --bg: #fbfbfa;
+  --ink: #1b1b1a;
+  --muted: #5f5f5a;
+  --muted-2: #76766f;
+  --faint: #9a9a93;
+  --teal: #54b394;
+  --orange: #e9674c;
+  --yellow: #edbb52;
+  --line: rgba(20, 20, 20, 0.1);
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-hanken), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.reference-landing * {
+  box-sizing: border-box;
+}
+
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 16px clamp(20px, 5vw, 56px);
+  background: rgba(251, 251, 250, 0.86);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topnav .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-right: auto;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.topnav .bd,
+.footer .bd {
+  display: flex;
+  gap: 4px;
+}
+
+.topnav .bd span,
+.footer .bd span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.topnav .nm {
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.topnav .links {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.topnav a,
+.topnav button.linkish {
+  font-size: 14.5px;
+  color: var(--muted-2);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.topnav a:hover,
+.topnav button.linkish:hover {
+  color: var(--ink);
+}
+
+.burger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.burger span {
+  width: 22px;
+  height: 1.6px;
+  background: var(--ink);
+}
+
+.drawer {
+  position: fixed;
+  top: 57px;
+  right: 0;
+  width: min(76vw, 286px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 14px;
+  background: rgba(251, 251, 250, 0.72);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-left: 1px solid rgba(255, 255, 255, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: 0 0 0 20px;
+  box-shadow: -8px 24px 60px rgba(20, 20, 20, 0.16);
+  transform: translateX(100%);
+  opacity: 0;
+  transition: transform 0.32s cubic-bezier(0.2, 0.7, 0.2, 1), opacity 0.25s ease;
+}
+
+.drawer.open {
+  transform: none;
+  opacity: 1;
+}
+
+.drawer a,
+.drawer button {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--muted-2);
+  text-decoration: none;
+  padding: 13px 12px;
+  border-radius: 11px;
+  transition: color 0.2s, background 0.2s;
+  border: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.drawer svg {
+  width: 18px;
+  height: 18px;
+  color: var(--muted-2);
+  flex-shrink: 0;
+}
+
+.scrim {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 20, 20, 0.18);
+  z-index: 55;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
+
+.scrim.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+iframe.sec {
+  display: block;
+  width: 100%;
+  border: 0;
+  background: var(--bg);
+}
+
+iframe#s-hero {
+  height: 100vh;
+  height: 100svh;
+}
+
+.footer {
+  background: var(--ink);
+  color: #d9d9d4;
+}
+
+@media (max-width: 720px) {
+  .topnav .links {
+    display: none;
+  }
+
+  .burger {
+    display: flex;
+  }
+}
+
 .section-shell {
   position: relative;
   margin: 0 auto;
