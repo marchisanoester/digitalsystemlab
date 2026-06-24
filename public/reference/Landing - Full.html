@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Studio — full landing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #fbfbfa; --ink: #1b1b1a; --muted: #5f5f5a; --muted-2: #76766f; --faint: #9a9a93;
+    --teal: #54b394; --orange: #e9674c; --yellow: #edbb52;
+    --line: rgba(20,20,20,0.10);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); }
+  body { font-family: 'Hanken Grotesk', system-ui, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+
+  /* single sticky nav — matches the hero's bar typography (Hanken Grotesk) */
+  .topnav {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; align-items: center; gap: 24px;
+    padding: 16px clamp(20px, 5vw, 56px);
+    background: rgba(251,251,250,0.86); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topnav .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; cursor: pointer; }
+  .topnav .brand .bd { display: flex; gap: 4px; }
+  .topnav .brand .bd span { width: 7px; height: 7px; border-radius: 50%; }
+  .topnav .brand .nm { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+  .topnav .links { display: flex; align-items: center; gap: 30px; }
+  .topnav a {
+    font-size: 14.5px; color: var(--muted-2); text-decoration: none; white-space: nowrap;
+    transition: color .2s; cursor: pointer;
+  }
+  .topnav a:hover { color: var(--ink); }
+  .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .burger span { width: 22px; height: 1.6px; background: var(--ink); transition: transform .25s, opacity .2s; }
+
+  /* mobile menu — expandable panel anchored to the top-right edge (no float) */
+  .drawer {
+    position: fixed; top: 57px; right: 0; width: min(76vw, 286px); z-index: 60;
+    background: rgba(251,251,250,0.72); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+    border-left: 1px solid rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.5);
+    border-radius: 0 0 0 20px;
+    transform: translateX(100%); opacity: 0; transition: transform .32s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
+    display: flex; flex-direction: column; padding: 20px 14px;
+    box-shadow: -8px 24px 60px rgba(20,20,20,0.16);
+  }
+  .drawer.open { transform: none; opacity: 1; }
+  .drawer a {
+    display: flex; align-items: center; gap: 13px; cursor: pointer;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 16px;
+    color: var(--muted-2); text-decoration: none;
+    padding: 13px 12px; border-radius: 11px; transition: color .2s, background .2s;
+  }
+  .drawer a:not(:last-child) { border-bottom: 1px solid var(--line-soft); }
+  .drawer a svg { width: 18px; height: 18px; color: var(--muted-2); flex-shrink: 0; transition: color .2s; }
+  .drawer a:hover { background: rgba(20,20,20,0.04); color: var(--ink); }
+  .drawer a:hover svg { color: var(--teal); }
+  .scrim { position: fixed; inset: 0; background: rgba(20,20,20,0.18); z-index: 55; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  @media (max-width: 720px) {
+    .topnav .links { display: none; }
+    .burger { display: flex; }
+  }
+
+  /* sections embedded faithfully via auto-sized iframes */
+  iframe.sec { display: block; width: 100%; border: 0; background: var(--bg); }
+  iframe#s-hero { height: 100vh; height: 100svh; }
+  /* No per-seam margin hacks: every section keeps its own consistent vertical
+     padding, so each seam (01→02, 02→03, …) equals the hero→01 gap. This is
+     exactly how production behaves — the preview spacing is now faithful. */
+
+  /* dark, distinctive footer (export spec: IG · LinkedIn · WhatsApp · rights) */
+  .footer {
+    background: var(--ink); color: #d9d9d4;
+  }
+  .footer .inner {
+    display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap;
+    padding: 32px clamp(20px, 5vw, 64px); max-width: 1180px; margin: 0 auto;
+  }
+  .footer .left { display: flex; align-items: center; gap: 11px; }
+  .footer .bd { display: flex; gap: 4px; }
+  .footer .bd span { width: 7px; height: 7px; border-radius: 50%; }
+  .footer .nm { font-family: 'Newsreader', serif; font-size: 17px; color: #fbfbfa; }
+  .footer .rights { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #8a8a83; }
+  .footer .socials { display: flex; gap: 12px; }
+  .footer .socials a {
+    width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.16);
+    display: flex; align-items: center; justify-content: center; color: #e8e8e3;
+    transition: border-color .2s, background .2s, transform .15s, color .2s; text-decoration: none;
+  }
+  .footer .socials a:hover { border-color: var(--teal); color: #fff; transform: translateY(-1px); }
+  .footer .socials svg { width: 18px; height: 18px; }
+  @media (max-width: 600px) { .footer .inner { flex-direction: column; text-align: center; gap: 22px; } }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fbfbfa"></rect><circle cx="42" cy="44" r="4" fill="#1b1b1a"></circle><circle cx="58" cy="44" r="4" fill="#1b1b1a"></circle><rect x="34" y="62" width="32" height="4" rx="2" fill="#54b394"></rect><rect x="38" y="72" width="24" height="4" rx="2" fill="#9a9a93"></rect></svg>
+</template>
+
+<nav class="topnav">
+  <div class="brand" data-to="s-hero">
+    <span class="bd"><span style="background:#54b394"></span><span style="background:#e9674c"></span><span style="background:#edbb52"></span></span>
+    <span class="nm">Digital Systems Studio</span>
+  </div>
+  <div class="links">
+    <a data-to="s-services">Services</a>
+    <a data-to="s-work">Work</a>
+    <a data-to="s-labs">Venture Labs</a>
+    <a class="tab" href="Section - About.html">About</a>
+    <a class="tab" href="Section - Contact.html">Contact</a>
+  </div>
+  <div class="burger" id="burger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer">
+  <a data-to="s-services"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4.5-8 4.5-8-4.5L12 3zM4 12l8 4.5 8-4.5M4 16.5L12 21l8-4.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>Services</a>
+  <a data-to="s-work"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.7"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.7"></path></svg>Work</a>
+  <a data-to="s-labs"><svg viewBox="0 0 24 24" fill="none"><path d="M9 3v6l-4.5 8.5A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-2.5L15 9V3M8 3h8M9.5 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Venture Labs</a>
+  <a href="Section - About.html"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"></circle><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg>About</a>
+  <a href="Section - Contact.html"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"></rect><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>Contact</a>
+</aside>
+
+<iframe class="sec" id="s-hero"     src="Hero - Robot 3D (Silver).html" title="Hero" scrolling="no"></iframe>
+<iframe class="sec" id="s-services" src="Section - Services.html" title="Services" scrolling="no"></iframe>
+<iframe class="sec" id="s-work"     src="Section - Selected Work.html" title="Selected work" scrolling="no"></iframe>
+<iframe class="sec" id="s-labs"     src="Section - Venture Labs.html" title="Venture Labs" scrolling="no"></iframe>
+
+<footer class="footer">
+  <div class="inner">
+    <div class="left">
+      <span class="bd"><span style="background:#54b394"></span><span style="background:#e9674c"></span><span style="background:#edbb52"></span></span>
+      <span class="nm">Digital Systems Studio</span>
+    </div>
+    <span class="rights">© 2026 — All rights reserved</span>
+    <div class="socials">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="1.7"></rect><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"></circle><circle cx="17" cy="7" r="1.2" fill="currentColor"></circle></svg></a>
+      <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="3" stroke="currentColor" stroke-width="1.7"></rect><path d="M7 10v7M7 7.2v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg></a>
+      <a href="Section - Contact.html" aria-label="WhatsApp / contact"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var frames = document.querySelectorAll('iframe.sec');
+
+    function syncOne(f) {
+      if (f.id === 's-hero') return;
+      try {
+        var doc = f.contentDocument; if (!doc || !doc.body) return;
+        f.style.height = Math.max(doc.documentElement.scrollHeight, doc.body.scrollHeight) + 'px';
+      } catch (e) {}
+    }
+
+    function setupHeroHide(f) {
+      var tries = 0;
+      var hide = setInterval(function () {
+        tries++;
+        try {
+          var d2 = f.contentDocument;
+          var hn = d2 && d2.querySelector('nav');
+          var sl = d2 && d2.querySelector('.sliver');
+          if (hn) hn.style.display = 'none';
+          if (sl) sl.style.display = 'none';
+          if ((hn && sl) || tries > 60) clearInterval(hide);
+        } catch (e) { clearInterval(hide); }
+      }, 150);
+    }
+    function wire(f) {
+      if (f.id === 's-hero') { setupHeroHide(f); return; }
+      syncOne(f);
+      try {
+        var doc = f.contentDocument;
+        if (doc) {
+          new ResizeObserver(function () { syncOne(f); }).observe(doc.documentElement);
+          doc.addEventListener('click', function () { setTimeout(function () { syncOne(f); }, 560); }, true);
+        }
+      } catch (e) {}
+    }
+    /* srcdoc iframes may have fired 'load' before this script ran, so wire
+       immediately AND on load, and keep polling for a while as fonts/media settle */
+    frames.forEach(function (f) { wire(f); f.addEventListener('load', function () { wire(f); }); });
+    var n = 0, poll = setInterval(function () {
+      frames.forEach(function (f) { if (f.id !== 's-hero') syncOne(f); });
+      if (++n > 40) clearInterval(poll);
+    }, 300);
+    window.addEventListener('load', function () { frames.forEach(function (f) { if (f.id !== 's-hero') syncOne(f); }); });
+
+    window.addEventListener('resize', function () { frames.forEach(syncOne); });
+
+    /* forward host scroll into the sections so scroll-driven effects (Services
+       highlight) track the real page scroll */
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return; ticking = true;
+      requestAnimationFrame(function () {
+        frames.forEach(function (f) { try { f.contentWindow.postMessage('host-scroll', '*'); } catch (e) {} });
+        ticking = false;
+      });
+    }, { passive: true });
+
+    /* nav: smooth-scroll to a section */
+    function go(id) {
+      var el = document.getElementById(id); if (!el) return;
+      window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - 60, behavior: 'smooth' });
+    }
+    document.querySelectorAll('[data-to]').forEach(function (a) {
+      a.addEventListener('click', function () { go(a.getAttribute('data-to')); closeDrawer(); });
+    });
+    /* arrive from an About/Contact tab with a hash → scroll to that section */
+    var hash = (location.hash || '').replace('#', '');
+    if (hash && document.getElementById(hash)) { setTimeout(function () { go(hash); }, 1500); }
+
+    /* mobile drawer */
+    var drawer = document.getElementById('drawer'), scrim = document.getElementById('scrim'), burger = document.getElementById('burger');
+    function openDrawer() { drawer.classList.add('open'); scrim.classList.add('open'); }
+    function closeDrawer() { drawer.classList.remove('open'); scrim.classList.remove('open'); }
+    burger.addEventListener('click', openDrawer);
+    scrim.addEventListener('click', closeDrawer);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Hero — Digital Systems Studio · 3D robot (silver on light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<!-- Spline runtime: same robot scene, original finish — tuned silver on a light field.
+     Injected at runtime (not a static tag) so HTML bundlers leave it external:
+     it's an ES module with relative chunk imports that breaks if inlined. -->
+<script>
+  (function () {
+    var s = document.createElement('script');
+    s.type = 'module';
+    s.src = ['https://unpkg.com', '@splinetool/viewer@1.9.48', 'build', 'spline-viewer.js'].join('/');
+    document.head.appendChild(s);
+  })();
+</script>
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; background: #fbfbfa; }
+
+  .stage {
+    position: relative;
+    min-height: 100vh;
+    background: #fbfbfa;
+    overflow: hidden;
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    display: flex; flex-direction: column;
+  }
+
+  /* ===== near-invisible grid relief — born in the text column, fading out right/down ===== */
+  .grid-relief {
+    pointer-events: none; position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(27,27,26,0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27,27,26,0.05) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(110% 95% at 18% 62%, #000 0%, rgba(0,0,0,0.5) 38%, transparent 72%);
+    mask-image: radial-gradient(110% 95% at 18% 62%, #000 0%, rgba(0,0,0,0.5) 38%, transparent 72%);
+  }
+
+  /* ===== inverted Spotlight: a soft BLACK beam instead of light ===== */
+  .spotlight {
+    pointer-events: none; position: absolute; z-index: 1;
+    height: 169%; width: 138%; top: -12rem; left: -8%;
+    opacity: 0; animation: spotlight 2.2s ease 0.4s 1 forwards;
+  }
+  @keyframes spotlight {
+    0%   { opacity: 0; transform: translate(-64%, -58%) scale(0.55); }
+    100% { opacity: 1; transform: translate(-44%, -38%) scale(1); }
+  }
+  @keyframes beamIn {
+    0%   { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  @media (min-width: 768px) { .spotlight { left: 28%; top: -7rem; width: 96%; } }
+  @media (min-width: 1280px) { .spotlight { left: 40%; width: 80%; } }
+
+  /* soft cool halo behind the robot — lifts the dark metal off the white field */
+  .robot-halo {
+    pointer-events: none; position: absolute; z-index: 0;
+    top: 8%; right: -6%; width: 58%; height: 92%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(15,15,16,0.10) 0%, rgba(15,15,16,0.04) 45%, transparent 72%);
+    filter: blur(24px);
+  }
+  /* grounding floor shadow under the robot */
+  .robot-floor {
+    pointer-events: none; position: absolute; z-index: 1;
+    bottom: 6%; right: 6%; width: 44%; height: 9%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(15,15,16,0.22) 0%, rgba(15,15,16,0.08) 55%, transparent 78%);
+    filter: blur(10px);
+  }
+
+  /* mobile-only continuation beam: one diagonal shadow from the top-left corner,
+     widening as it descends, tip landing on the robot's center */
+  .beam { display: none; }
+
+  /* ===== nav ===== */
+  nav {
+    position: relative; z-index: 10;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 26px clamp(22px, 5vw, 64px);
+    border-bottom: 1px solid rgba(20,20,20,0.08);
+  }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand .dots { display: flex; gap: 4px; }
+  .brand .dots span { width: 7px; height: 7px; border-radius: 50%; }
+  .brand-name { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; color: #1b1b1a; }
+  .navlinks { display: flex; gap: 36px; }
+  .navlinks a { font-size: 14.5px; color: #76766f; text-decoration: none; transition: color .2s; }
+  .navlinks a:hover { color: #1b1b1a; }
+  .burger { display: none; flex-direction: column; gap: 5px; }
+  .burger span { width: 20px; height: 1.5px; background: #1b1b1a; }
+
+  /* ===== hero body ===== */
+  .hero {
+    position: relative; z-index: 2; flex: 1;
+    display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    align-items: center; column-gap: 24px;
+    padding: 0 clamp(22px, 5vw, 64px);
+  }
+  .left { display: flex; flex-direction: column; max-width: 560px; }
+  .copy { position: relative; z-index: 10; max-width: 560px; }
+  h1 {
+    margin: 0; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: clamp(40px, 5.2vw, 66px); line-height: 1.02; letter-spacing: -0.02em;
+    background-image: linear-gradient(to bottom, #151514 0%, #3c3c39 62%, #6b6b66 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .sub {
+    margin: 26px 0 0; max-width: 470px; font-size: 18.5px; line-height: 1.6; color: #5f5f5a;
+  }
+  .ctas { display: flex; align-items: center; gap: 22px; margin-top: 40px; flex-wrap: wrap; }
+  .link {
+    font-size: 15px; color: #1b1b1a; text-decoration: none;
+    border-bottom: 1px solid rgba(20,20,20,0.25); padding-bottom: 3px; transition: border-color .2s;
+  }
+  .link:hover { border-color: rgba(20,20,20,0.6); }
+
+  /* ===== robot column ===== */
+  .robot { position: relative; height: 100%; min-height: 420px; }
+  /* meticulous backdrop behind the robot: soft depth only — grid lines fade out as they
+     approach the robot (the robot area stays clean) */
+  .robot-bg {
+    pointer-events: none; position: absolute; inset: 0; z-index: 0;
+    background-image:
+      radial-gradient(58% 52% at 50% 44%, rgba(15,15,16,0.13) 0%, rgba(15,15,16,0.05) 55%, transparent 78%);
+  }
+  .robot-canvas { position: absolute; inset: 0; z-index: 1; overflow: hidden; }
+  spline-viewer {
+    display: block; width: 100%; height: 100%;
+    /* keep the robot's real materials; nudge them toward silver on the light field */
+    filter: saturate(0.8) brightness(1.18) contrast(0.98);
+  }
+  .robot-fallback {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    /* fallback sits on top of the inverted viewer — counter-invert so it looks right */
+  }
+  .loader {
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 3px solid rgba(20,20,20,0.12); border-top-color: rgba(20,20,20,0.65);
+    animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* the robot's own CTA — light glass, dark text */
+  .robot-cta {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 5; display: inline-flex; align-items: center; gap: 10px; cursor: pointer;
+    background: rgba(255,255,255,0.78); color: #1b1b1a;
+    border: 1px solid rgba(20,20,20,0.14); border-radius: 999px;
+    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    font-family: 'Hanken Grotesk', sans-serif; font-size: 14.5px; font-weight: 600;
+    padding: 12px 22px; white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(15,15,16,0.14); transition: transform .15s, border-color .2s, background .2s;
+  }
+  .robot-cta:hover { transform: translateX(-50%) translateY(-2px); border-color: rgba(84,179,148,0.65); background: #ffffff; }
+  .pip { width: 7px; height: 7px; border-radius: 50%; background: #54b394; box-shadow: 0 0 0 4px rgba(84,179,148,.2); }
+
+  /* ===== robot speech: dot-matrix mouth + eye-glow rig over the visor ===== */
+  .face-rig {
+    position: absolute; inset: 0; z-index: 3; pointer-events: none;
+    /* face anchor in % of the robot canvas — tweak offsets ride on top */
+    --face-x: 50%; --face-y: 28%; --eye-span: 13%; --mouth-dy: 7%; --mouth-w: 12%;
+    --twd-dx: 0%; --twd-dy: 0%; --twd-scale: 1;
+    --twm-dx: 0%; --twm-dy: 0%; --twm-scale: 1;
+    /* desktop offsets by default; the 860px media query swaps in the mobile set */
+    --tw-dx: var(--twd-dx); --tw-dy: var(--twd-dy); --tw-scale: var(--twd-scale);
+    opacity: 0; transition: opacity .5s ease;
+  }
+  .face-rig.on, .face-rig.guide { opacity: 1; }
+  .mouth-canvas {
+    position: absolute;
+    left: calc(var(--face-x) + var(--tw-dx));
+    top: calc(var(--face-y) + var(--mouth-dy) + var(--tw-dy));
+    width: var(--mouth-w);
+    transform: translate(-50%, -50%) scale(var(--tw-scale));
+  }
+  .eye-glow {
+    position: absolute; width: 7%; aspect-ratio: 1.7; border-radius: 50%;
+    top: calc(var(--face-y) + var(--tw-dy));
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0) 70%);
+    filter: blur(5px); mix-blend-mode: screen;
+    transform: translate(-50%, -50%) scale(var(--tw-scale)); opacity: 0;
+  }
+  .eye-glow.l { left: calc(var(--face-x) + var(--tw-dx) - var(--eye-span) / 2); }
+  .eye-glow.r { left: calc(var(--face-x) + var(--tw-dx) + var(--eye-span) / 2); }
+  /* soft dark patch behind the mouth — covers the visor's specular glare while
+     talking; hotspot sits at 40% height so most of the shade falls toward the chin */
+  .mouth-shade {
+    position: absolute;
+    left: calc(var(--face-x) + var(--tw-dx));
+    top: calc(var(--face-y) + var(--mouth-dy) + var(--tw-dy) + 2%);
+    width: calc(var(--mouth-w) * 2.6); aspect-ratio: 1.05; border-radius: 50%;
+    transform: translate(-50%, -50%) scale(var(--tw-scale));
+    background: radial-gradient(50% 42% at 50% 40%, rgba(5,7,9,1) 0%, rgba(5,7,9,0.72) 45%, rgba(5,7,9,0.28) 68%, transparent 85%);
+    mix-blend-mode: multiply; filter: blur(5px);
+    opacity: var(--shade, 0.45);
+  }
+  /* alignment guide (tweak): shows where the rig thinks the face is */
+  .face-rig.guide .mouth-canvas { outline: 1.5px dashed rgba(84,179,148,0.95); outline-offset: 2px; background: rgba(84,179,148,0.10); }
+  .face-rig.guide .eye-glow { filter: none; mix-blend-mode: normal; opacity: 1 !important; background: rgba(233,103,76,0.16); outline: 1.5px dashed rgba(233,103,76,0.85); }
+  .face-rig.guide .mouth-shade { outline: 1.5px dashed rgba(120,120,116,0.6); }
+  .rig-readout {
+    position: absolute; left: 10px; top: 10px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.12em;
+    color: #3a8a6f; background: rgba(255,255,255,0.88); border: 1px solid rgba(84,179,148,0.4);
+    padding: 4px 8px; border-radius: 6px;
+  }
+
+  /* ===== audit console — the CTA pill grown into subtitles + answers ===== */
+  .console {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    z-index: 5; width: min(460px, calc(100% - 28px));
+    background: rgba(255,255,255,0.84); border: 1px solid rgba(20,20,20,0.14);
+    border-radius: 22px; -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    box-shadow: 0 14px 40px rgba(15,15,16,0.16);
+    padding: 13px 16px 15px; font-family: 'Hanken Grotesk', sans-serif;
+    animation: consoleIn .35s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  @keyframes consoleIn { from { opacity: 0; transform: translateX(-50%) translateY(10px) scale(0.96); } }
+  .convo-top { display: flex; align-items: center; gap: 8px; }
+  .convo-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #9a9a93; }
+  .convo-x {
+    appearance: none; border: 0; background: transparent; cursor: pointer; padding: 0;
+    width: 24px; height: 24px; border-radius: 8px; color: #9a9a93; font-size: 15px; line-height: 1;
+  }
+  .convo-x:hover { background: rgba(20,20,20,0.06); color: #1b1b1a; }
+  .pip.talk { animation: pipPulse 1.1s ease infinite; }
+  @keyframes pipPulse { 50% { box-shadow: 0 0 0 7px rgba(84,179,148,0.10); } }
+  .subtitle { margin: 9px 2px 0; font-size: 15.5px; line-height: 1.55; color: #1b1b1a; min-height: 48px; text-wrap: pretty; }
+  .subtitle .w { opacity: 0; transition: opacity .16s ease; }
+  .subtitle .w.on { opacity: 1; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  /* two-column layout when there are many answer options */
+  .chips.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .chips.grid2 .chip { width: 100%; text-align: left; }
+  .chips.grid2 .chip:last-child:nth-child(odd) { grid-column: 1 / -1; width: fit-content; }
+  .chip {
+    appearance: none; cursor: pointer;
+    border: 1px solid rgba(20,20,20,0.16); background: #ffffff; color: #1b1b1a;
+    border-radius: 999px; padding: 9px 15px;
+    font-family: 'Hanken Grotesk', sans-serif; font-size: 13.5px; font-weight: 600;
+    transition: transform .15s, border-color .2s, background .2s;
+    animation: chipIn .3s ease both;
+  }
+  .chip:hover { transform: translateY(-1px); border-color: rgba(84,179,148,0.7); }
+  .chip.primary { background: #1b1b1a; color: #fbfbfa; border-color: #1b1b1a; }
+  .chip.primary:hover { background: #2c2c2a; }
+  .chip.ghost { background: transparent; }
+  @keyframes chipIn { from { opacity: 0; transform: translateY(6px); } }
+
+  /* ===== footer sliver ===== */
+  .sliver {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; gap: 12px;
+    padding: 20px clamp(22px, 5vw, 64px);
+    border-top: 1px solid rgba(20,20,20,0.08);
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.18em;
+    text-transform: uppercase; color: #9a9a93;
+  }
+  .sliver .dot { width: 6px; height: 6px; border-radius: 50%; background: #54b394; }
+
+  @media (max-width: 860px) {
+    .navlinks { display: none; }
+    .burger { display: flex; }
+    /* one continuous beam instead of spotlight + separate halo */
+    .spotlight { display: none; }
+    .robot-halo { display: none; }
+    .beam {
+      display: block; pointer-events: none; position: absolute; z-index: 0;
+      top: 22%; left: -100%; width: 150%; height: 44%;
+      /* thicker at its start (top-left) so it also washes over the left of the nav bar */
+      background:
+        radial-gradient(46% 92% at 20% 50%, rgba(15,15,16,0.22) 0%, rgba(15,15,16,0.09) 55%, transparent 78%),
+        radial-gradient(50% 42% at 55% 50%, rgba(15,15,16,0.18) 0%, rgba(15,15,16,0.07) 55%, transparent 78%);
+      filter: blur(26px);
+      transform: rotate(48deg);
+      transform-origin: 100% 50%;
+      opacity: 0; animation: beamIn 1.8s ease 0.3s 1 forwards;
+    }
+    .grid-relief {
+      /* only the first edge columns read; lines dissolve from the second column
+         inward, so the robot's zone stays clean. Nav band barely shows any grid. */
+      background-image:
+        linear-gradient(to right, rgba(27,27,26,0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(27,27,26,0.08) 1px, transparent 1px);
+      background-size: 38px 38px;
+      -webkit-mask-image:
+        linear-gradient(to right, #000 0%, rgba(0,0,0,0.55) 40px, transparent 96px, transparent calc(100% - 96px), rgba(0,0,0,0.55) calc(100% - 40px), #000 100%),
+        linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.18) 80px, #000 170px);
+      mask-image:
+        linear-gradient(to right, #000 0%, rgba(0,0,0,0.55) 40px, transparent 96px, transparent calc(100% - 96px), rgba(0,0,0,0.55) calc(100% - 40px), #000 100%),
+        linear-gradient(to bottom, transparent 0, rgba(0,0,0,0.18) 80px, #000 170px);
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
+    }
+    .robot-halo { top: 10%; right: 0; left: 0; width: auto; height: 42%; background: radial-gradient(50% 50% at 50% 50%, rgba(15,15,16,0.13) 0%, rgba(15,15,16,0.05) 45%, transparent 72%); }
+    .robot-floor { display: none; }
+    .hero { grid-template-columns: 1fr; display: flex; flex-direction: column; padding-top: 30px; gap: 10px; }
+    .left { display: contents; }
+    h1 { order: 1; max-width: 100%; }
+    /* full-bleed robot: cancel the hero side padding exactly, edge to edge */
+    .robot { order: 2; min-height: 0; height: auto; width: auto; align-self: stretch; margin-left: calc(-1 * clamp(22px, 5vw, 64px)); margin-right: calc(-1 * clamp(22px, 5vw, 64px)); position: relative; }
+    .copy { order: 3; }
+    .robot-canvas { position: relative; inset: auto; width: 100%; height: clamp(320px, 50vh, 460px); }
+    spline-viewer { height: 100%; }
+    /* CTA overlays the robot, glassy, same as desktop */
+    .robot-cta { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); margin: 0; box-shadow: 0 10px 30px rgba(15,15,16,0.16); }
+    .robot-cta:hover { transform: translateX(-50%) translateY(-2px); }
+    /* stronger, clean landing glow behind the robot (no grid lines) */
+    .robot-bg {
+      background-image:
+        radial-gradient(62% 56% at 50% 42%, rgba(15,15,16,0.17) 0%, rgba(15,15,16,0.07) 55%, transparent 80%);
+    }
+    .copy { max-width: 100%; }
+    h1 { font-size: clamp(33px, 9vw, 46px); }
+    .sub { font-size: 16px; margin-top: 20px; }
+    .ctas { margin-top: 28px; }
+    /* face anchor on the mobile framing (wider canvas → face lower & larger) */
+    .face-rig {
+      --face-x: 48.3%; --face-y: 42.5%; --eye-span: 15%; --mouth-dy: 8%; --mouth-w: 16%;
+      --tw-dx: var(--twm-dx); --tw-dy: var(--twm-dy); --tw-scale: var(--twm-scale);
+    }
+    .console { bottom: 14px; width: min(440px, calc(100% - 24px)); }
+  }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fbfbfa"></rect><circle cx="42" cy="46" r="4" fill="#1b1b1a"></circle><circle cx="58" cy="46" r="4" fill="#1b1b1a"></circle><circle cx="44" cy="58" r="2" fill="#54b394"></circle><circle cx="50" cy="58" r="2" fill="#54b394"></circle><circle cx="56" cy="58" r="2" fill="#54b394"></circle></svg>
+</template>
+<div id="root"></div>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="robot-speech.jsx"></script>
+<script type="text/babel">
+  const { useState, useEffect, useRef } = React;
+
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "mouthDX": -0.5,
+    "mouthDY": -5,
+    "mouthScale": 0.5,
+    "mouthDXm": 1,
+    "mouthDYm": -21,
+    "mouthScalem": 0.4,
+    "glareCover": 0.55,
+    "headFollow": 12,
+    "eyeGlow": true,
+    "headGestures": true,
+    "guide": false,
+    "voiceSpeed": 1.3
+  }/*EDITMODE-END*/;
+
+  /* ---- inverted Spotlight: soft black beam on the light field ---- */
+  function Spotlight({ fill = '#0f0f10' }) {
+    return (
+      <svg className="spotlight" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3787 2842" fill="none">
+        <g filter="url(#sl)">
+          <ellipse cx="1924.71" cy="273.501" rx="1924.71" ry="273.501"
+            transform="matrix(-0.822377 -0.568943 -0.568943 0.822377 3631.88 2291.09)"
+            fill={fill} fillOpacity="0.10" />
+        </g>
+        <defs>
+          <filter id="sl" x="0.86" y="0.84" width="3785.16" height="2840.26"
+            filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
+            <feFlood floodOpacity="0" result="bg" />
+            <feBlend mode="normal" in="SourceGraphic" in2="bg" result="shape" />
+            <feGaussianBlur stdDeviation="151" result="blur" />
+          </filter>
+        </defs>
+      </svg>
+    );
+  }
+
+  /* ---- SplineScene: same robot, inverted via CSS filter to read white ---- */
+  function SplineScene({ scene, t }) {
+    const hostRef = useRef(null);
+    const viewerRef = useRef(null);
+    const [loaded, setLoaded] = useState(false);
+    const d = useDialogue(AUDIT_SCRIPT, t.voiceSpeed);
+    const gestureRef = useRef({ dx: 0, dy: 0 });
+    /* while the robot talks, mute real pointer input and feed the head a slow
+       wander around center so it faces the viewer with living micro-motion */
+    useHeadGestures(viewerRef, d.phase !== 'idle' && t.headGestures, gestureRef);
+    useEffect(() => {
+      const host = hostRef.current; if (!host) return;
+      const el = document.createElement('spline-viewer');
+      viewerRef.current = el;
+      el.setAttribute('url', scene);
+      /* start hidden + zoomed into the face (eyes ~28% down), then pull back */
+      el.style.opacity = '0';
+      el.style.transform = 'scale(2.7)';
+      el.style.transformOrigin = '50% 28%';
+      el.style.transition = 'opacity 0.6s ease, transform 2.4s cubic-bezier(0.2, 0.7, 0.2, 1)';
+      let revealed = false;
+      const strip = () => { try { const r = el.shadowRoot; if (!r) return; r.querySelectorAll('#logo, a').forEach((n) => n.remove()); } catch (e) {} };
+      /* only reveal once the canvas aspect matches its host — hides the squashed first frame */
+      const ready = () => {
+        try {
+          const c = el.shadowRoot && el.shadowRoot.querySelector('canvas');
+          if (!c || !c.width || !c.height) return false;
+          const r = el.getBoundingClientRect();
+          if (!r.width || !r.height) return false;
+          return Math.abs(c.width / c.height - r.width / r.height) / (r.width / r.height) < 0.2;
+        } catch (e) { return false; }
+      };
+      const reveal = () => {
+        if (revealed) return; revealed = true;
+        setLoaded(true); strip();
+        el.style.opacity = '1';
+        /* next frames: ease the camera-like pull-back to the full robot */
+        requestAnimationFrame(() => requestAnimationFrame(() => { el.style.transform = 'scale(1)'; }));
+      };
+      el.addEventListener('load', () => { if (ready()) reveal(); });
+      const poll = setInterval(() => {
+        strip();
+        if (!revealed && ready()) { reveal(); }
+        if (revealed) clearInterval(poll);
+      }, 120);
+      const stripTimer = setInterval(strip, 400);
+      setTimeout(() => clearInterval(stripTimer), 6000);
+      /* safety: never stay hidden forever */
+      const failsafe = setTimeout(() => { if (!revealed) reveal(); }, 9000);
+      host.appendChild(el);
+      return () => { clearInterval(poll); clearInterval(stripTimer); clearTimeout(failsafe); viewerRef.current = null; try { host.removeChild(el); } catch (e) {} };
+    }, [scene]);
+    return (
+      <div className="robot">
+        <div className="robot-bg"></div>
+        <div ref={hostRef} className="robot-canvas">
+          {!loaded && <div className="robot-fallback"><span className="loader"></span></div>}
+          <FaceRig speakingRef={d.speakingRef} on={d.phase !== 'idle'}
+                   d={{ dx: t.mouthDX, dy: t.mouthDY, scale: t.mouthScale }}
+                   m={{ dx: t.mouthDXm, dy: t.mouthDYm, scale: t.mouthScalem }}
+                   eyes={t.eyeGlow} guide={t.guide}
+                   shade={t.glareCover} follow={t.headFollow} trackRef={gestureRef} />
+        </div>
+        <AuditConsole d={d} script={AUDIT_SCRIPT} />
+      </div>
+    );
+  }
+
+  function Hero() {
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+    return (
+      <div className="stage">
+        <div className="grid-relief"></div>
+        <Spotlight fill="#0f0f10" />
+        <div className="beam"></div>
+        <div className="robot-halo"></div>
+        <div className="robot-floor"></div>
+
+        <nav>
+          <div className="brand">
+            <div className="dots">
+              <span style={{ background: '#54b394' }} />
+              <span style={{ background: '#e9674c' }} />
+              <span style={{ background: '#edbb52' }} />
+            </div>
+            <span className="brand-name">Digital Systems Studio</span>
+          </div>
+          <div className="navlinks">
+            <a href="#">Services</a>
+            <a href="#">Work</a>
+            <a href="#">Venture Labs</a>
+            <a href="#">Contact</a>
+          </div>
+          <div className="burger"><span /><span /></div>
+        </nav>
+
+        <div className="hero">
+          <div className="left">
+            <h1>Stop doing work<br />a system could do.</h1>
+            <div className="copy">
+              <p className="sub">
+                We build simple digital systems — automations, tools and small software — that take
+                repetitive tasks off your team&rsquo;s hands.
+              </p>
+            </div>
+          </div>
+
+          <SplineScene scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" t={t} />
+        </div>
+
+        <div className="sliver">
+          <span className="dot"></span>
+          <span>01 — What we do</span>
+          <span style={{ flex: 1 }}></span>
+          <span>scroll</span>
+        </div>
+
+        <TweaksPanel>
+          <TweakSection label="Robot face" />
+          <TweakToggle label="Alignment guide" value={t.guide} onChange={(v) => setTweak('guide', v)} />
+          <TweakSlider label="Mouth · horizontal" value={t.mouthDX} min={-15} max={15} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mouthDX', v)} />
+          <TweakSlider label="Mouth · vertical" value={t.mouthDY} min={-20} max={20} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mouthDY', v)} />
+          <TweakSlider label="Mouth · size" value={t.mouthScale} min={0.5} max={2.2} step={0.05} unit="×"
+                       onChange={(v) => setTweak('mouthScale', v)} />
+          <TweakSlider label="Glare cover" value={t.glareCover} min={0} max={1} step={0.05}
+                       onChange={(v) => setTweak('glareCover', v)} />
+          <TweakSlider label="Follows head" value={t.headFollow} min={0} max={60} step={1} unit="%"
+                       onChange={(v) => setTweak('headFollow', v)} />
+          <TweakToggle label="Eye glow while talking" value={t.eyeGlow} onChange={(v) => setTweak('eyeGlow', v)} />
+          <TweakToggle label="Head gestures" value={t.headGestures} onChange={(v) => setTweak('headGestures', v)} />
+          <TweakSection label="Robot face · mobile" />
+          <TweakSlider label="Mouth · horizontal (m)" value={t.mouthDXm} min={-20} max={20} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mouthDXm', v)} />
+          <TweakSlider label="Mouth · vertical (m)" value={t.mouthDYm} min={-30} max={30} step={0.5} unit="%"
+                       onChange={(v) => setTweak('mouthDYm', v)} />
+          <TweakSlider label="Mouth · size (m)" value={t.mouthScalem} min={0.4} max={2.5} step={0.05} unit="×"
+                       onChange={(v) => setTweak('mouthScalem', v)} />
+          <TweakSection label="Voice" />
+          <TweakSlider label="Speaking speed" value={t.voiceSpeed} min={0.6} max={1.8} step={0.05} unit="×"
+                       onChange={(v) => setTweak('voiceSpeed', v)} />
+        </TweaksPanel>
+      </div>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<Hero />);
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Contact — Digital Systems Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fbfbfa; --ink: #1b1b1a; --ink-soft: #3c3c39;
+    --muted: #5f5f5a; --muted-2: #76766f; --faint: #9a9a93;
+    --teal: #54b394; --orange: #e9674c; --yellow: #edbb52;
+    --line: rgba(20,20,20,0.10); --line-soft: rgba(20,20,20,0.07);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .contact {
+    position: relative;
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(78px, 12vh, 150px) clamp(22px, 5vw, 64px) clamp(60px, 9vh, 110px);
+  }
+  .contact::before {
+    content: ""; pointer-events: none; position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(27,27,26,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27,27,26,0.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(80% 64% at 50% 4%, #000 0%, transparent 60%);
+    mask-image: radial-gradient(80% 64% at 50% 4%, #000 0%, transparent 60%);
+  }
+  .contact > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint);
+  }
+  .eyebrow .dots { display: flex; gap: 4px; }
+  .eyebrow .dots span { width: 6px; height: 6px; border-radius: 50%; }
+
+  .inner { text-align: center; margin-top: 22px; }
+  h2 {
+    margin: 0 auto; max-width: 16ch; font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: clamp(36px, 5.2vw, 66px); line-height: 1.03; letter-spacing: -0.02em;
+    color: var(--ink); text-wrap: balance;
+  }
+  h2 em { font-style: italic; color: var(--ink-soft); }
+  .lede {
+    margin: clamp(18px, 3vh, 26px) auto 0; max-width: 50ch;
+    font-size: clamp(16.5px, 1.5vw, 18.5px); line-height: 1.6; color: var(--muted); text-wrap: pretty;
+  }
+
+  /* channels */
+  .channels {
+    margin: clamp(34px, 5vh, 52px) auto 0; max-width: 720px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .ch {
+    display: flex; align-items: center; gap: 14px; text-align: left; text-decoration: none;
+    padding: 18px 20px; border: 1px solid var(--line); border-radius: 16px;
+    background: rgba(255,255,255,0.55); color: var(--ink);
+    transition: transform .18s, border-color .22s, background .22s;
+  }
+  .ch:hover { transform: translateY(-2px); border-color: rgba(84,179,148,0.6); background: #fff; }
+  .ch .ic {
+    width: 42px; height: 42px; flex-shrink: 0; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ink); color: var(--bg);
+  }
+  .ch.wa .ic { background: var(--teal); }
+  .ch .ic svg { width: 21px; height: 21px; }
+  .ch .t { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+  .ch .t .k { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted-2); }
+  .ch .t .v { font-size: 16.5px; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+
+  /* primary CTA */
+  .cta-wrap { margin-top: clamp(30px, 4.5vh, 44px); display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .cta {
+    display: inline-flex; align-items: center; gap: 11px; white-space: nowrap;
+    background: var(--ink); color: var(--bg); text-decoration: none;
+    font-size: 17px; font-weight: 600; padding: 16px 30px; border-radius: 999px;
+    transition: transform .18s, background .22s;
+  }
+  .cta:hover { transform: translateY(-1px); background: #2c2c2a; }
+  .cta .pip { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); }
+  .cta .arr { transition: transform .22s; }
+  .cta:hover .arr { transform: translateX(3px); }
+  .micro { font-size: 14px; color: var(--muted-2); }
+
+  /* footer */
+  .foot {
+    margin-top: clamp(56px, 8vh, 96px); padding-top: 26px; border-top: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;
+  }
+  .foot .brand { display: flex; align-items: center; gap: 10px; }
+  .foot .brand .bd { display: flex; gap: 4px; }
+  .foot .brand .bd span { width: 7px; height: 7px; border-radius: 50%; }
+  .foot .brand .nm { font-family: 'Newsreader', serif; font-size: 18px; color: var(--ink); }
+  .foot .made { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.1em; color: var(--faint); }
+  .foot .socials { display: flex; gap: 18px; }
+  .foot .socials a { font-size: 14px; color: var(--muted-2); text-decoration: none; transition: color .2s; }
+  .foot .socials a:hover { color: var(--ink); }
+
+  @media (max-width: 600px) {
+    .contact { padding: 58px clamp(20px,5vw,28px) 48px; }
+    h2 { font-size: 33px; }
+    .channels { grid-template-columns: 1fr; max-width: 420px; }
+    .foot { flex-direction: column; align-items: flex-start; gap: 16px; }
+  }
+
+  /* shared page chrome (standalone About/Contact pages) */
+  .pagenav { position: sticky; top: 0; z-index: 60; display: flex; align-items: center; gap: 24px;
+    padding: 16px clamp(20px,5vw,56px); background: rgba(251,251,250,0.86);
+    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .pagenav .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; text-decoration: none; }
+  .pagenav .brand .bd { display: flex; gap: 4px; }
+  .pagenav .brand .bd span { width: 7px; height: 7px; border-radius: 50%; }
+  .pagenav .brand .nm { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; color: var(--ink); white-space: nowrap; }
+  .pagenav .links { display: flex; align-items: center; gap: 30px; }
+  .pagenav a.lnk { font-size: 14.5px; color: var(--muted-2); text-decoration: none; white-space: nowrap; transition: color .2s; }
+  .pagenav a.lnk:hover { color: var(--ink); }
+  .pagenav a.lnk.here { color: var(--ink); }
+  .pagenav .burger { display: none; flex-direction: column; gap: 5px; cursor: pointer; }
+  .pagenav .burger span { width: 22px; height: 1.6px; background: var(--ink); }
+  .pdrawer { position: fixed; top: 57px; right: 0; width: min(76vw,286px); z-index: 70;
+    background: rgba(251,251,250,0.72); -webkit-backdrop-filter: blur(18px) saturate(1.4); backdrop-filter: blur(18px) saturate(1.4);
+    border-left: 1px solid rgba(255,255,255,0.5); border-bottom: 1px solid rgba(255,255,255,0.5); border-radius: 0 0 0 20px;
+    transform: translateX(100%); opacity: 0; transition: transform .32s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
+    display: flex; flex-direction: column; padding: 20px 14px; box-shadow: -8px 24px 60px rgba(20,20,20,0.16); }
+  .pdrawer.open { transform: none; opacity: 1; }
+  .pdrawer a { display: flex; align-items: center; gap: 13px; font-family: 'Hanken Grotesk', system-ui, sans-serif; font-weight: 500; font-size: 16px; color: var(--muted-2); text-decoration: none; padding: 13px 12px; border-radius: 11px; transition: color .2s, background .2s; }
+  .pdrawer a:not(:last-child) { border-bottom: 1px solid var(--line-soft); }
+  .pdrawer a svg { width: 18px; height: 18px; color: var(--muted-2); flex-shrink: 0; transition: color .2s; }
+  .pdrawer a:hover { background: rgba(20,20,20,0.04); color: var(--ink); }
+  .pdrawer a:hover svg { color: var(--teal); }
+  .pscrim { position: fixed; inset: 0; background: rgba(20,20,20,0.18); z-index: 65; opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .pscrim.open { opacity: 1; pointer-events: auto; }
+  @media (max-width: 720px) { .pagenav .links { display: none; } .pagenav .burger { display: flex; } }
+  .darkfoot { background: var(--ink); color: #d9d9d4; }
+  .darkfoot .inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; padding: 32px clamp(20px,5vw,64px); max-width: 1180px; margin: 0 auto; }
+  .darkfoot .left { display: flex; align-items: center; gap: 11px; }
+  .darkfoot .bd { display: flex; gap: 4px; }
+  .darkfoot .bd span { width: 7px; height: 7px; border-radius: 50%; }
+  .darkfoot .nm { font-family: 'Newsreader', serif; font-size: 17px; color: #fbfbfa; }
+  .darkfoot .rights { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.08em; color: #8a8a83; }
+  .darkfoot .socials { display: flex; gap: 12px; }
+  .darkfoot .socials a { width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.16); display: flex; align-items: center; justify-content: center; color: #e8e8e3; text-decoration: none; transition: border-color .2s, color .2s, transform .15s; }
+  .darkfoot .socials a:hover { border-color: var(--teal); color: #fff; transform: translateY(-1px); }
+  .darkfoot .socials svg { width: 18px; height: 18px; }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fbfbfa"></rect><rect x="24" y="34" width="52" height="34" rx="6" fill="none" stroke="#1b1b1a" stroke-width="3"></rect><path d="M26 38l24 18 24-18" fill="none" stroke="#54b394" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+</template>
+
+<nav class="pagenav">
+  <a class="brand" href="Landing - Full.html">
+    <span class="bd"><span style="background:#54b394"></span><span style="background:#e9674c"></span><span style="background:#edbb52"></span></span>
+    <span class="nm">Digital Systems Studio</span>
+  </a>
+  <div class="links">
+    <a class="lnk" href="Landing - Full.html">Home</a>
+    <a class="lnk" href="Landing - Full.html#s-services">Services</a>
+    <a class="lnk" href="Landing - Full.html#s-work">Work</a>
+    <a class="lnk" href="Landing - Full.html#s-labs">Venture Labs</a>
+    <a class="lnk" href="Section - About.html">About</a>
+    <a class="lnk here" href="Section - Contact.html">Contact</a>
+  </div>
+  <div class="burger" id="pburger"><span></span><span></span><span></span></div>
+</nav>
+<div class="pscrim" id="pscrim"></div>
+<aside class="pdrawer" id="pdrawer">
+  <a href="Landing - Full.html"><svg viewBox="0 0 24 24" fill="none"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>Home</a>
+  <a href="Landing - Full.html#s-services"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3l8 4.5-8 4.5-8-4.5L12 3zM4 12l8 4.5 8-4.5M4 16.5L12 21l8-4.5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path></svg>Services</a>
+  <a href="Landing - Full.html#s-work"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.7"></rect><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" stroke="currentColor" stroke-width="1.7"></path></svg>Work</a>
+  <a href="Landing - Full.html#s-labs"><svg viewBox="0 0 24 24" fill="none"><path d="M9 3v6l-4.5 8.5A2 2 0 0 0 6.3 21h11.4a2 2 0 0 0 1.8-2.5L15 9V3M8 3h8M9.5 14h5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>Venture Labs</a>
+  <a href="Section - About.html"><svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.4" stroke="currentColor" stroke-width="1.7"></circle><path d="M5.5 20a6.5 6.5 0 0 1 13 0" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg>About</a>
+  <a href="Section - Contact.html"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.7"></rect><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path></svg>Contact</a>
+</aside>
+
+<section class="contact">
+  <div class="eyebrow">
+    <span class="dots">
+      <span style="background:#54b394"></span>
+      <span style="background:#e9674c"></span>
+      <span style="background:#edbb52"></span>
+    </span>
+    <span>05 — Contact</span>
+  </div>
+
+  <div class="inner">
+    <h2>Tell us where the <em>friction</em> is.</h2>
+    <p class="lede">Send one message about the part of your work that eats the most time. We'll reply with whether a small system could take it off your hands — no pitch, no forms.</p>
+
+    <div class="channels">
+      <a class="ch" href="mailto:hello@studio.com">
+        <span class="ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="currentColor" stroke-width="1.8"></rect><path d="M4 7l8 6 8-6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </span>
+        <span class="t"><span class="k">Email</span><span class="v">hello@studio.com</span></span>
+      </a>
+      <a class="ch wa" href="https://wa.me/000000000" target="_blank" rel="noopener">
+        <span class="ic" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path><path d="M8.8 8.2c-.3 0-.6.1-.8.4-.3.4-.9 1-.9 2.2s.9 2.5 1 2.6c.1.2 1.7 2.8 4.3 3.7 2.1.8 2.5.6 3 .6.5-.1 1.4-.6 1.6-1.2.2-.6.2-1 .1-1.2 0-.1-.3-.2-.6-.4l-1.5-.7c-.2-.1-.4-.1-.6.1l-.6.8c-.1.2-.3.2-.5.1-.6-.2-1.4-.6-2.1-1.4-.5-.6-.9-1.3-1-1.5-.1-.2 0-.4.1-.5l.4-.5c.1-.2.2-.3.2-.5s0-.3-.1-.5l-.6-1.5c-.2-.4-.4-.4-.6-.4z" fill="currentColor"></path></svg>
+        </span>
+        <span class="t"><span class="k">WhatsApp</span><span class="v">Message the team</span></span>
+      </a>
+    </div>
+
+    <div class="cta-wrap">
+      <a class="cta" href="Landing - Full.html"><span class="pip"></span>Or let the robot run a quick audit <span class="arr">→</span></a>
+      <span class="micro">Three questions, about 30 seconds. It's the same place we start every project.</span>
+    </div>
+  </div>
+</section>
+
+<footer class="darkfoot">
+  <div class="inner">
+    <div class="left">
+      <span class="bd"><span style="background:#54b394"></span><span style="background:#e9674c"></span><span style="background:#edbb52"></span></span>
+      <span class="nm">Digital Systems Studio</span>
+    </div>
+    <span class="rights">© 2026 — All rights reserved</span>
+    <div class="socials">
+      <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="5" stroke="currentColor" stroke-width="1.7"></rect><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.7"></circle><circle cx="17" cy="7" r="1.2" fill="currentColor"></circle></svg></a>
+      <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" fill="none"><rect x="3.5" y="3.5" width="17" height="17" rx="3" stroke="currentColor" stroke-width="1.7"></rect><path d="M7 10v7M7 7.2v.01M11 17v-4a2 2 0 0 1 4 0v4M11 10v7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"></path></svg></a>
+      <a href="https://wa.me/000000000" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.7 13.6L3 21l4.5-1.2A9 9 0 1 0 12 3z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path></svg></a>
+    </div>
+  </div>
+</footer>
+<script>
+  (function(){
+    var b=document.getElementById('pburger'), d=document.getElementById('pdrawer'), s=document.getElementById('pscrim');
+    if(b){ b.addEventListener('click',function(){d.classList.add('open');s.classList.add('open');}); s.addEventListener('click',function(){d.classList.remove('open');s.classList.remove('open');}); }
+  })();
+</script>
+
+</body>
+</html>

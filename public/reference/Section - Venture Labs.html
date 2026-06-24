@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Venture Labs — Digital Systems Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Hanken+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #fbfbfa; --ink: #1b1b1a; --ink-soft: #3c3c39;
+    --muted: #5f5f5a; --muted-2: #76766f; --faint: #9a9a93;
+    --teal: #54b394; --orange: #e9674c; --yellow: #edbb52;
+    --line: rgba(20,20,20,0.10); --line-soft: rgba(20,20,20,0.07);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: 'Hanken Grotesk', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .labs {
+    position: relative;
+    max-width: 1180px; margin: 0 auto;
+    padding: clamp(78px, 12vh, 150px) clamp(22px, 5vw, 64px) clamp(82px, 12vh, 150px);
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+  }
+  /* grid relief — top-center this time, plus the usual foot echo */
+  .labs::before, .labs::after {
+    content: ""; pointer-events: none; position: absolute; inset: 0; z-index: 0;
+    background-image:
+      linear-gradient(to right, rgba(27,27,26,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(27,27,26,0.045) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+  .labs::before {
+    -webkit-mask-image: radial-gradient(70% 56% at 50% 0%, #000 0%, transparent 62%);
+    mask-image: radial-gradient(70% 56% at 50% 0%, #000 0%, transparent 62%);
+  }
+  .labs::after {
+    -webkit-mask-image: radial-gradient(92% 44% at 80% 100%, #000 0%, transparent 64%);
+    mask-image: radial-gradient(92% 44% at 80% 100%, #000 0%, transparent 64%);
+  }
+  .labs > * { position: relative; z-index: 1; }
+
+  .eyebrow {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px;
+    letter-spacing: 0.22em; text-transform: uppercase; color: var(--faint);
+  }
+  .eyebrow .dots { display: flex; gap: 4px; }
+  .eyebrow .dots span { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* ===== the two-robot scene — a fist-bump, the spark of collaboration ===== */
+  .duo {
+    position: relative;
+    margin: clamp(30px, 4.5vh, 46px) 0 clamp(24px, 3.5vh, 34px);
+    display: flex; align-items: flex-end; justify-content: center; gap: 10px;
+    --r: clamp(72px, 11vw, 104px);
+  }
+  .bot { width: var(--r); }
+  .bot svg { width: 100%; height: auto; display: block; overflow: visible; }
+  /* ours = filled ink · theirs = outline. They lean in and bump at mid-cycle. */
+  .bot.ours { transform-origin: bottom right; animation: bumpR 3.8s cubic-bezier(.5,0,.4,1) infinite; }
+  .bot.theirs { transform-origin: bottom left; animation: bumpL 3.8s cubic-bezier(.5,0,.4,1) infinite; }
+  @keyframes bumpR {
+    0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    38% { transform: translateX(5px) translateY(1px) rotate(1.8deg); }
+    50% { transform: translateX(7px) translateY(0) rotate(2.2deg); }
+    62% { transform: translateX(5px) translateY(1px) rotate(1.8deg); }
+  }
+  @keyframes bumpL {
+    0%, 100% { transform: translateX(0) translateY(0) rotate(0deg); }
+    38% { transform: translateX(-5px) translateY(1px) rotate(-1.8deg); }
+    50% { transform: translateX(-7px) translateY(0) rotate(-2.2deg); }
+    62% { transform: translateX(-5px) translateY(1px) rotate(-1.8deg); }
+  }
+  .bot .body-fill { fill: var(--ink); }
+  .bot .body-line { fill: none; stroke: var(--ink); stroke-width: 2.4; }
+  .bot .arm-line { stroke: var(--ink); stroke-width: 4; stroke-linecap: round; fill: none; }
+  .bot .eye-on-dark { fill: #fbfbfa; }
+  .bot .eye-on-light { fill: var(--ink); }
+  .bot .eye { animation: botBlink 3.8s steps(1) infinite; }
+  @keyframes botBlink { 0%, 30%, 34%, 100% { opacity: 1; } 31%, 33% { opacity: 0.12; } }
+  /* eyes glance toward each other as they go in for the bump */
+  .bot.ours .eyes { animation: glanceR 3.8s ease-in-out infinite; }
+  .bot.theirs .eyes { animation: glanceL 3.8s ease-in-out infinite; }
+  @keyframes glanceR { 0%, 20%, 80%, 100% { transform: translateX(0); } 45%, 60% { transform: translateX(1.6px); } }
+  @keyframes glanceL { 0%, 20%, 80%, 100% { transform: translateX(0); } 45%, 60% { transform: translateX(-1.6px); } }
+  /* antenna tip lights */
+  .bot .tip { fill: var(--teal); animation: tipGlow 3.8s ease-in-out infinite; }
+  @keyframes tipGlow { 0%, 100% { opacity: 0.45; } 50% { opacity: 1; } }
+
+  /* the burst where their palms meet, up high */
+  .burst {
+    position: absolute; left: 50%; bottom: calc(var(--r) * 0.82);
+    transform: translate(-50%, 50%); pointer-events: none;
+    width: calc(var(--r) * 0.14); height: calc(var(--r) * 0.14);
+  }
+  .burst .core {
+    position: absolute; inset: 0; border-radius: 50%; background: var(--teal);
+    box-shadow: 0 0 10px 2px rgba(84,179,148,0.7);
+    animation: burstCore 3.8s cubic-bezier(.4,0,.3,1) infinite;
+  }
+  @keyframes burstCore {
+    0%, 34% { transform: scale(0.2); opacity: 0; }
+    50% { transform: scale(1.15); opacity: 1; }
+    70% { transform: scale(0.7); opacity: 0; }
+    100% { transform: scale(0.2); opacity: 0; }
+  }
+  .burst .ring {
+    position: absolute; inset: 0; border-radius: 50%; border: 2px solid var(--teal);
+    animation: burstRing 3.8s cubic-bezier(.3,0,.2,1) infinite;
+  }
+  @keyframes burstRing {
+    0%, 40% { transform: scale(0.4); opacity: 0; }
+    50% { opacity: 0.85; }
+    78%, 100% { transform: scale(3.4); opacity: 0; }
+  }
+  /* tiny collaboration spark-particles flicking off the bump */
+  .burst .spk {
+    position: absolute; left: 50%; top: 50%; width: 3px; height: 3px; border-radius: 50%;
+    background: var(--teal); margin: -1.5px 0 0 -1.5px;
+    animation: spk 3.8s ease-out infinite;
+  }
+  .burst .spk.s1 { animation-delay: 0s; --ang: -42deg; }
+  .burst .spk.s2 { animation-delay: 0s; --ang: 36deg; }
+  .burst .spk.s3 { animation-delay: 0s; --ang: -130deg; }
+  .burst .spk.s4 { animation-delay: 0s; --ang: 140deg; }
+  @keyframes spk {
+    0%, 44% { transform: rotate(var(--ang)) translateX(0) scale(1); opacity: 0; }
+    50% { opacity: 1; }
+    66%, 100% { transform: rotate(var(--ang)) translateX(calc(var(--r) * 0.26)) scale(0.4); opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bot.ours, .bot.theirs, .bot .eye, .bot .eyes, .bot .tip,
+    .burst .core, .burst .ring, .burst .spk { animation: none; }
+    .burst .core { opacity: 0.9; transform: translate(-50%,50%) scale(0.9); }
+    .bot .tip { opacity: 1; }
+  }
+
+  h2 {
+    margin: 0; max-width: 19ch;
+    font-family: 'Newsreader', Georgia, serif; font-weight: 400;
+    font-size: clamp(34px, 5vw, 62px); line-height: 1.04; letter-spacing: -0.02em;
+    color: var(--ink); text-wrap: balance;
+  }
+  h2 em { font-style: italic; color: var(--ink-soft); }
+  .lede {
+    margin: clamp(20px, 3vh, 28px) auto 0; max-width: 56ch;
+    font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.62; color: var(--muted); text-wrap: pretty;
+  }
+  .lede b { color: var(--ink-soft); font-weight: 600; }
+
+  /* in-development line for Butcamp — quiet, honest */
+  .dev {
+    margin-top: clamp(26px, 4vh, 38px);
+    display: inline-flex; align-items: center; gap: 11px; flex-wrap: wrap; justify-content: center;
+    padding: 11px 18px; border: 1px solid var(--line); border-radius: 999px;
+    background: rgba(255,255,255,0.5);
+  }
+  .dev .status {
+    display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+    font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.14em;
+    text-transform: uppercase; color: var(--muted-2);
+  }
+  .dev .status::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--yellow);
+    box-shadow: 0 0 0 0 rgba(237,187,82,0.5); animation: devPulse 2.4s ease-in-out infinite;
+  }
+  @keyframes devPulse { 0%,100% { box-shadow: 0 0 0 0 rgba(237,187,82,0.5); } 50% { box-shadow: 0 0 0 5px rgba(237,187,82,0); } }
+  .dev .sep { width: 1px; height: 14px; background: var(--line); }
+  .dev .txt { font-size: 14.5px; color: var(--ink-soft); }
+  .dev .txt b { color: var(--ink); font-weight: 600; }
+
+  /* CTA */
+  .cta-row {
+    margin-top: clamp(32px, 5vh, 48px);
+    display: flex; align-items: center; gap: 20px; flex-wrap: wrap; justify-content: center;
+  }
+  .cta {
+    display: inline-flex; align-items: center; gap: 10px; white-space: nowrap;
+    background: var(--ink); color: var(--bg); text-decoration: none;
+    font-size: 16px; font-weight: 600; padding: 14px 24px; border-radius: 999px;
+    transition: transform .18s, background .22s;
+  }
+  .cta:hover { transform: translateY(-1px); background: #2c2c2a; }
+  .cta .arr { transition: transform .22s; }
+  .cta:hover .arr { transform: translateX(3px); }
+  .cta-note { font-size: 14.5px; color: var(--muted-2); }
+  .cta-note b { color: var(--ink-soft); font-weight: 600; }
+
+  @media (max-width: 600px) {
+    .labs { padding: 56px clamp(20px,5vw,28px) 64px; }
+    h2 { font-size: 30px; }
+    .duo { --r: 54px; }
+    .dev { flex-direction: column; gap: 9px; padding: 13px 18px; }
+    .dev .sep { display: none; }
+    .cta-row { flex-direction: column; gap: 14px; }
+  }
+</style>
+</head>
+<body>
+<template id="__bundler_thumbnail">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#fbfbfa"></rect><rect x="30" y="40" width="20" height="18" rx="4" fill="#1b1b1a"></rect><rect x="52" y="40" width="20" height="18" rx="4" fill="none" stroke="#1b1b1a" stroke-width="2.6"></rect><circle cx="63" cy="49" r="1.8" fill="#1b1b1a"></circle><circle cx="50" cy="34" r="3" fill="#54b394"></circle></svg>
+</template>
+
+<section class="labs">
+  <div class="eyebrow">
+    <span class="dots">
+      <span style="background:#54b394"></span>
+      <span style="background:#e9674c"></span>
+      <span style="background:#edbb52"></span>
+    </span>
+    <span>03 — Venture Labs</span>
+  </div>
+
+  <div class="duo" aria-hidden="true">
+    <!-- ours: filled ink robot, inner arm reaching toward the bump -->
+    <span class="bot ours">
+      <svg viewBox="0 0 56 60" fill="none">
+        <line x1="24" y1="6" x2="24" y2="13" stroke="#1b1b1a" stroke-width="2.4" stroke-linecap="round"></line>
+        <circle class="tip" cx="24" cy="5" r="3.2"></circle>
+        <rect class="body-fill" x="7" y="13" width="34" height="28" rx="9"></rect>
+        <g class="eyes">
+          <circle class="eye eye-on-dark" cx="18" cy="27" r="3.1"></circle>
+          <circle class="eye eye-on-dark" cx="30" cy="27" r="3.1"></circle>
+        </g>
+        <rect class="body-fill" x="12" y="43" width="24" height="12" rx="4"></rect>
+        <path class="arm-line" d="M10 33 L3 43"></path>
+        <path class="arm-line" d="M39 31 L52 8"></path>
+      </svg>
+    </span>
+
+    <span class="burst">
+      <span class="ring"></span>
+      <span class="core"></span>
+      <span class="spk s1"></span><span class="spk s2"></span>
+      <span class="spk s3"></span><span class="spk s4"></span>
+    </span>
+
+    <!-- theirs: outline robot (the collaborator), inner arm reaching back -->
+    <span class="bot theirs">
+      <svg viewBox="0 0 56 60" fill="none">
+        <line x1="32" y1="6" x2="32" y2="13" stroke="#1b1b1a" stroke-width="2.4" stroke-linecap="round"></line>
+        <circle class="tip" cx="32" cy="5" r="3.2"></circle>
+        <rect class="body-line" x="15" y="13" width="34" height="28" rx="9"></rect>
+        <g class="eyes">
+          <circle class="eye eye-on-light" cx="26" cy="27" r="3.1"></circle>
+          <circle class="eye eye-on-light" cx="38" cy="27" r="3.1"></circle>
+        </g>
+        <rect class="body-line" x="20" y="43" width="24" height="12" rx="4"></rect>
+        <path class="arm-line" d="M46 33 L53 43"></path>
+        <path class="arm-line" d="M17 31 L4 8"></path>
+      </svg>
+    </span>
+  </div>
+
+  <h2>We don't only build for clients. We build <em>with</em> people.</h2>
+
+  <p class="lede">
+    Venture Labs is where we develop our own products — and co-own them with the creators and companies we partner with, under whatever model fits, <b>equity-for-work included</b>.
+  </p>
+
+  <div class="dev">
+    <span class="status">Example in development</span>
+    <span class="sep"></span>
+    <span class="txt"><b>Butcamp</b> — an experience-design platform. Its <b>Corporate</b> line builds team-building, workshops and HR tools, B2B.</span>
+  </div>
+
+  <div class="cta-row">
+    <a class="cta" href="Section - Contact.html" target="_top">Have an idea? Let's talk <span class="arr">→</span></a>
+    <span class="cta-note">We'll explore building it together — and under what model.</span>
+  </div>
+</section>
+
+</body>
+</html>
