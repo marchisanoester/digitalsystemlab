@@ -68,7 +68,7 @@ textarea {
   position: relative;
   margin: 0 auto;
   max-width: 1180px;
-  padding: clamp(72px, 11vh, 140px) clamp(22px, 5vw, 64px);
+  padding: 50px clamp(22px, 5vw, 64px) clamp(72px, 11vh, 140px);
 }
 
 .section-shell::before,
