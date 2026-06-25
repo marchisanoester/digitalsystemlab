@@ -45,11 +45,12 @@ const AUDIT_SCRIPT = {
   ],
   close: 'My read: a strong candidate for a simple system. Want the humans to take a proper look?',
   finals: [
-    { label: 'WhatsApp them', primary: true },
-    { label: 'Book a short call', primary: true },
-    { label: 'Email me the summary' },
+    { id: 'whatsapp', label: 'WhatsApp them', primary: true },
+    { id: 'call', label: 'Book a short call', primary: true },
+    { id: 'email', label: 'Email me the summary' },
   ],
   outro: 'Done — I\u2019ve left them a note. They\u2019ll take it from here.',
+  emailSuccess: 'Done — I\u2019ve emailed the summary. The humans will take it from here.',
   again: 'Run it again',
 };
 
@@ -62,6 +63,8 @@ function useDialogue(script, speed) {
   const [line, setLine] = useState('');
   const [vis, setVis] = useState(0);
   const [stepIx, setStepIx] = useState(0);
+  const [answers, setAnswers] = useState([]);
+  const [emailState, setEmailState] = useState({ email: '', message: '', status: 'idle', error: '' });
   const speakingRef = useRef({ level: 0 });
   const audioRef = useRef(null);
   const timers = useRef([]);
@@ -173,11 +176,14 @@ function useDialogue(script, speed) {
 
   const start = useCallback(() => {
     setStepIx(0);
+    setAnswers([]);
+    setEmailState({ email: '', message: '', status: 'idle', error: '' });
     speak([script.intro, script.steps[0].q], 'choose');
   }, [speak]);
 
   const choose = useCallback((opt) => {
     const next = stepIx + 1;
+    setAnswers((prev) => prev.concat([{ question: script.steps[stepIx].q, answer: opt.label }]));
     if (next < script.steps.length) {
       setStepIx(next);
       speak([opt.ack, script.steps[next].q], 'choose');
@@ -186,18 +192,66 @@ function useDialogue(script, speed) {
     }
   }, [stepIx, speak]);
 
-  const finish = useCallback(() => { speak([script.outro], 'done'); }, [speak]);
+  const finish = useCallback((opt) => {
+    if (opt && opt.id === 'email') {
+      clear();
+      stopVoice();
+      speakingRef.current.level = 0;
+      setEmailState((s) => ({ ...s, status: 'idle', error: '' }));
+      setPhase('email');
+      return;
+    }
+    speak([script.outro], 'done');
+  }, [speak]);
+
+  const updateEmail = useCallback((field, value) => {
+    setEmailState((s) => ({ ...s, [field]: value, error: '' }));
+  }, []);
+
+  const submitEmail = useCallback((event) => {
+    event.preventDefault();
+    const email = (emailState.email || '').trim();
+    const message = (emailState.message || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailState((s) => ({ ...s, status: 'idle', error: 'Add a valid email address.' }));
+      return;
+    }
+    setEmailState((s) => ({ ...s, status: 'sending', error: '' }));
+    fetch('/api/audit-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, message, answers }),
+    })
+      .then(async (res) => {
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          throw new Error(data.error || 'Could not send the email.');
+        }
+        return res.json().catch(() => ({}));
+      })
+      .then(() => {
+        const words = script.emailSuccess.split(/\s+/);
+        setLine(script.emailSuccess);
+        setVis(words.length);
+        setPhase('done');
+      })
+      .catch((err) => {
+        setEmailState((s) => ({ ...s, status: 'idle', error: err.message || 'Could not send the email.' }));
+      });
+  }, [emailState.email, emailState.message, answers]);
 
   const reset = useCallback(() => {
     clear(); stopVoice(); speakingRef.current.level = 0;
     setPhase('idle'); setLine(''); setVis(0); setStepIx(0);
+    setAnswers([]);
+    setEmailState({ email: '', message: '', status: 'idle', error: '' });
   }, []);
 
   useEffect(() => () => { clear(); stopVoice(); }, []);
 
   return {
-    phase, line, vis, step: script.steps[stepIx],
-    start, choose, finish, reset, speakingRef,
+    phase, line, vis, step: script.steps[stepIx], answers, emailState,
+    start, choose, finish, reset, updateEmail, submitEmail, speakingRef,
     speaking: phase === 'speaking',
   };
 }
@@ -417,6 +471,29 @@ function AuditConsole({ d, script }) {
               style={{ animationDelay: i * 70 + 'ms' }} onClick={() => d.finish(o)}>{o.label}</button>
           ))}
         </div>
+      )}
+      {d.phase === 'email' && (
+        <form className="audit-email" onSubmit={d.submitEmail}>
+          <input
+            className="audit-input"
+            type="email"
+            value={d.emailState.email}
+            onChange={(e) => d.updateEmail('email', e.target.value)}
+            placeholder="Your email"
+            required
+          />
+          <textarea
+            className="audit-textarea"
+            value={d.emailState.message}
+            onChange={(e) => d.updateEmail('message', e.target.value)}
+            placeholder="text me here"
+            rows="3"
+          ></textarea>
+          {d.emailState.error && <p className="audit-error">{d.emailState.error}</p>}
+          <button className="chip primary audit-submit" type="submit" disabled={d.emailState.status === 'sending'}>
+            {d.emailState.status === 'sending' ? 'Sending…' : 'Send summary'}
+          </button>
+        </form>
       )}
       {d.phase === 'done' && (
         <div className="chips">
