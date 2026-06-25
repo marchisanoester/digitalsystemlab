@@ -112,6 +112,8 @@ function useDialogue(script, speed) {
     try {
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'robot-voice', text: text }, '*');
+        document.body.dataset.robotVoice = 'parent-audio';
+        return;
       }
     } catch (e) {}
     try {
@@ -160,7 +162,11 @@ function useDialogue(script, speed) {
       speakVoice(text);
       let w = 0;
       const tickWord = () => {
-        if (w >= words.length) { speakingRef.current.level = 0; after(700 / speedRef.current, nextSeg); return; }
+        if (w >= words.length) {
+          speakingRef.current.level = 0;
+          after((980 + words.length * 52) / speedRef.current, nextSeg);
+          return;
+        }
         const word = words[w++];
         setVis(w);
         /* burst of mouth energy, roughly proportional to the word */
