@@ -118,8 +118,9 @@ function useDialogue(script, speed) {
         a.preload = 'auto';
         a.style.display = 'none';
         audioRef.current = a;
-        a.volume = 1;
-        a.playbackRate = Math.max(0.85, Math.min(1.18, (speedRef.current || 1) * 0.9));
+        const embedded = window.parent && window.parent !== window;
+        a.volume = embedded ? 0.16 : 1;
+        a.playbackRate = embedded ? 1.05 : Math.max(0.85, Math.min(1.18, (speedRef.current || 1) * 0.9));
         document.body.appendChild(a);
         document.body.dataset.robotVoice = 'audio-start';
         a.addEventListener('playing', () => { document.body.dataset.robotVoice = 'audio-playing'; }, { once: true });
