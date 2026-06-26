@@ -50,7 +50,7 @@ const AUDIT_SCRIPT = {
     { id: 'email', label: 'Email me the summary' },
   ],
   outro: 'Done — I\u2019ve left them a note. They\u2019ll take it from here.',
-  emailSuccess: 'Done — I\u2019ve emailed the summary. The humans will take it from here.',
+  emailSuccess: 'Done — I\u2019ve saved the summary. The humans will take it from here.',
   again: 'Run it again',
 };
 
@@ -223,7 +223,7 @@ function useDialogue(script, speed) {
       return;
     }
     setEmailState((s) => ({ ...s, status: 'sending', error: '' }));
-    fetch('/api/audit-email', {
+    fetch('/api/audit-submissions', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, message, answers }),
