@@ -187,7 +187,7 @@ export const dictionary = {
         href: "https://esupwatamu.com",
         video: "/assets/esup-home.mp4",
         url: "esupwatamu.com",
-        rate: 0.5,
+        rate: 1,
       },
       {
         title: "Foxplan",

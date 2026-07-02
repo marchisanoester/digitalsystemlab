@@ -106,13 +106,17 @@ function ToolMockup({ type }: { type: string }) {
 
 function PlayOnceVideo({ src, rate }: { src: string; rate: number }) {
   const ref = useRef<HTMLVideoElement>(null);
-  const inView = useInView(ref, { amount: 0.35, once: true });
+  const inView = useInView(ref, { amount: 0.35 });
 
   useEffect(() => {
     const video = ref.current;
-    if (!video || !inView) return;
+    if (!video) return;
     video.playbackRate = rate;
-    void video.play();
+    if (inView) {
+      void video.play();
+    } else {
+      video.pause();
+    }
   }, [inView, rate]);
 
   return (
@@ -120,6 +124,7 @@ function PlayOnceVideo({ src, rate }: { src: string; rate: number }) {
       ref={ref}
       src={src}
       muted
+      loop
       playsInline
       preload="metadata"
       className="h-full w-full object-cover [filter:saturate(.6)_brightness(1.04)_contrast(.95)_sepia(.09)]"

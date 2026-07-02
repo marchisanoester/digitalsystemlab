@@ -459,7 +459,7 @@
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span class="url">esupwatamu.com</span></div>
         <div class="stage">
-          <video class="clip" data-clip muted playsinline preload="metadata" poster="">
+          <video class="clip" data-clip data-rate="1" muted playsinline loop preload="metadata" poster="">
             <source src="assets/esup-home.mp4" type="video/mp4">
           </video>
         </div>
@@ -475,7 +475,7 @@
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span class="url">foxplan.es</span></div>
         <div class="stage">
-          <video class="clip" data-clip data-rate="1" muted playsinline preload="metadata" poster="">
+          <video class="clip" data-clip data-rate="1" muted playsinline loop preload="metadata" poster="">
             <source src="assets/foxplan.mp4" type="video/mp4">
           </video>
         </div>
@@ -491,7 +491,7 @@
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span class="url">garodagecko.com</span></div>
         <div class="stage">
-          <video class="clip" data-clip data-rate="1" muted playsinline preload="metadata" poster="">
+          <video class="clip" data-clip data-rate="1" muted playsinline loop preload="metadata" poster="">
             <source src="assets/gecko.mp4" type="video/mp4">
           </video>
         </div>
@@ -508,8 +508,7 @@
 
 <script src="image-slot.js"></script>
 <script>
-  /* play each clip only while it's on screen — keeps the page calm and saves CPU.
-     clips play once, slowed down, and freeze on the last frame (no loop) */
+  /* play each clip while it's on screen — keeps the page calm and saves CPU. */
   (function () {
     var clips = document.querySelectorAll('video[data-clip]');
     if (!clips.length) return;
@@ -518,7 +517,7 @@
       var r = rateOf(v);
       v.playbackRate = r;
       v.addEventListener('loadedmetadata', function () { v.playbackRate = r; });
-      v.dataset.done = '';
+      v.dataset.visible = '';
     });
     if (!('IntersectionObserver' in window)) {
       clips.forEach(function (v) { v.play().catch(function(){}); });
@@ -527,16 +526,23 @@
     var io = new IntersectionObserver(function (entries) {
       entries.forEach(function (e) {
         var v = e.target;
-        if (e.isIntersecting && v.dataset.done !== '1') {
+        if (e.isIntersecting) {
+          v.dataset.visible = '1';
           v.playbackRate = rateOf(v);
           v.play().catch(function(){});
-        } else if (!e.isIntersecting && v.dataset.done !== '1') {
+        } else {
+          v.dataset.visible = '';
           v.pause();
         }
       });
     }, { threshold: 0.35 });
     clips.forEach(function (v) {
-      v.addEventListener('ended', function () { v.dataset.done = '1'; }); // freeze on last frame
+      v.addEventListener('ended', function () {
+        if (v.dataset.visible === '1') {
+          v.currentTime = 0;
+          v.play().catch(function(){});
+        }
+      });
       io.observe(v);
     });
   })();
