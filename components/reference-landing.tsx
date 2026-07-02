@@ -14,6 +14,7 @@ export function ReferenceLanding() {
   const robotAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastRobotVoiceRef = useRef<{ text: string; at: number } | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const bookingUrl = process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL || "";
 
   useEffect(() => {
     const frames = Object.values(frameRefs.current).filter(Boolean) as HTMLIFrameElement[];
@@ -339,7 +340,11 @@ export function ReferenceLanding() {
           }}
           className="sec"
           id={frame.id}
-          src={frame.src}
+          src={
+            frame.id === "s-hero" && bookingUrl
+              ? `${frame.src}?booking=${encodeURIComponent(bookingUrl)}`
+              : frame.src
+          }
           title={frame.title}
           scrolling="no"
           allow={frame.id === "s-hero" ? "autoplay" : undefined}

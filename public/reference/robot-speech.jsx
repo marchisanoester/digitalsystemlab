@@ -46,13 +46,21 @@ const AUDIT_SCRIPT = {
   close: 'My read: a strong candidate for a simple system. Want the humans to take a proper look?',
   finals: [
     { id: 'whatsapp', label: 'WhatsApp them', primary: true },
-    { id: 'call', label: 'Book a short call', primary: true },
+    { id: 'call', label: 'Book a quick call', primary: true },
     { id: 'email', label: 'Email me the summary' },
   ],
   outro: 'Done — I\u2019ve left them a note. They\u2019ll take it from here.',
   emailSuccess: 'Done — I\u2019ve saved the summary. The humans will take it from here.',
   again: 'Run it again',
 };
+
+const BOOKING_URL = (() => {
+  try {
+    return new URLSearchParams(window.location.search).get('booking') || '';
+  } catch (e) {
+    return '';
+  }
+})();
 
 /* ─── dialogue engine ──────────────────────────────────────────────────── */
 /* Phases: idle → speaking → choose → … → finals → done.
@@ -207,8 +215,19 @@ function useDialogue(script, speed) {
       setPhase('email');
       return;
     }
+    if (opt && opt.id === 'call') {
+      clear();
+      stopVoice();
+      speakingRef.current.level = 0;
+      setPhase('booking');
+      return;
+    }
     speak([script.outro], 'done');
   }, [speak]);
+
+  const closeBooking = useCallback(() => {
+    setPhase('finals');
+  }, []);
 
   const updateEmail = useCallback((field, value) => {
     setEmailState((s) => ({ ...s, [field]: value, error: '' }));
@@ -231,7 +250,7 @@ function useDialogue(script, speed) {
       .then(async (res) => {
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
-          throw new Error(data.error || 'Could not send the email.');
+          throw new Error(data.error || 'Could not save the request.');
         }
         return res.json().catch(() => ({}));
       })
@@ -242,7 +261,7 @@ function useDialogue(script, speed) {
         setPhase('done');
       })
       .catch((err) => {
-        setEmailState((s) => ({ ...s, status: 'idle', error: err.message || 'Could not send the email.' }));
+        setEmailState((s) => ({ ...s, status: 'idle', error: err.message || 'Could not save the request.' }));
       });
   }, [emailState.email, emailState.message, answers]);
 
@@ -257,7 +276,7 @@ function useDialogue(script, speed) {
 
   return {
     phase, line, vis, step: script.steps[stepIx], answers, emailState,
-    start, choose, finish, reset, updateEmail, submitEmail, speakingRef,
+    start, choose, finish, reset, updateEmail, submitEmail, closeBooking, speakingRef,
     speaking: phase === 'speaking',
   };
 }
@@ -501,6 +520,19 @@ function AuditConsole({ d, script }) {
           </button>
         </form>
       )}
+      {d.phase === 'booking' && (
+        <div className="booking-popover" role="dialog" aria-modal="true" aria-label="Book a quick call">
+          <div className="booking-head">
+            <span>Book a quick call</span>
+            <button className="booking-close" type="button" onClick={d.closeBooking} aria-label="Close calendar">×</button>
+          </div>
+          {BOOKING_URL ? (
+            <iframe className="booking-frame" src={BOOKING_URL} title="Book a quick call"></iframe>
+          ) : (
+            <div className="booking-empty">Calendar link not configured yet.</div>
+          )}
+        </div>
+      )}
       {d.phase === 'done' && (
         <div className="chips">
           <button className="chip ghost" onClick={d.start}>{script.again}</button>
@@ -511,5 +543,5 @@ function AuditConsole({ d, script }) {
 }
 
 Object.assign(window, {
-  AUDIT_SCRIPT, useDialogue, DotMouth, EyeGlows, FaceRig, useHeadGestures, AuditConsole,
+  AUDIT_SCRIPT, BOOKING_URL, useDialogue, DotMouth, EyeGlows, FaceRig, useHeadGestures, AuditConsole,
 });
