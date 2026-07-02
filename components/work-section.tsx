@@ -189,8 +189,6 @@ export function WorkSection() {
               tag={item.tag}
               title={item.title}
               text={item.text}
-              link={item.link}
-              href={item.href}
               collab={item.collab}
             />
           </article>
