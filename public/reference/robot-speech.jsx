@@ -62,6 +62,21 @@ const BOOKING_URL = (() => {
   }
 })();
 
+function openBookingWindow() {
+  if (!BOOKING_URL) return false;
+  const w = Math.min(980, Math.max(360, (window.screen && window.screen.availWidth ? window.screen.availWidth : window.innerWidth) - 80));
+  const h = Math.min(760, Math.max(560, (window.screen && window.screen.availHeight ? window.screen.availHeight : window.innerHeight) - 80));
+  const left = Math.max(0, ((window.screen && window.screen.availWidth ? window.screen.availWidth : window.innerWidth) - w) / 2);
+  const top = Math.max(0, ((window.screen && window.screen.availHeight ? window.screen.availHeight : window.innerHeight) - h) / 2);
+  const features = 'popup=yes,width=' + Math.round(w) + ',height=' + Math.round(h) + ',left=' + Math.round(left) + ',top=' + Math.round(top);
+  const opened = (window.top || window).open(BOOKING_URL, 'digital-systems-booking', features);
+  if (opened) {
+    try { opened.focus(); } catch (e) {}
+    return true;
+  }
+  return false;
+}
+
 /* ─── dialogue engine ──────────────────────────────────────────────────── */
 /* Phases: idle → speaking → choose → … → finals → done.
    While speaking, words reveal one by one and speakingRef.level carries the
@@ -219,15 +234,17 @@ function useDialogue(script, speed) {
       clear();
       stopVoice();
       speakingRef.current.level = 0;
-      setPhase('booking');
+      const opened = openBookingWindow();
+      const text = opened
+        ? 'Calendar opened — pick a time that works for you.'
+        : 'Calendar could not open. Please allow popups and try again.';
+      setLine(text);
+      setVis(text.split(/\s+/).length);
+      setPhase('done');
       return;
     }
     speak([script.outro], 'done');
   }, [speak]);
-
-  const closeBooking = useCallback(() => {
-    setPhase('finals');
-  }, []);
 
   const updateEmail = useCallback((field, value) => {
     setEmailState((s) => ({ ...s, [field]: value, error: '' }));
@@ -276,7 +293,7 @@ function useDialogue(script, speed) {
 
   return {
     phase, line, vis, step: script.steps[stepIx], answers, emailState,
-    start, choose, finish, reset, updateEmail, submitEmail, closeBooking, speakingRef,
+    start, choose, finish, reset, updateEmail, submitEmail, speakingRef,
     speaking: phase === 'speaking',
   };
 }
@@ -520,19 +537,6 @@ function AuditConsole({ d, script }) {
           </button>
         </form>
       )}
-      {d.phase === 'booking' && (
-        <div className="booking-popover" role="dialog" aria-modal="true" aria-label="Book a quick call">
-          <div className="booking-head">
-            <span>Book a quick call</span>
-            <button className="booking-close" type="button" onClick={d.closeBooking} aria-label="Close calendar">×</button>
-          </div>
-          {BOOKING_URL ? (
-            <iframe className="booking-frame" src={BOOKING_URL} title="Book a quick call"></iframe>
-          ) : (
-            <div className="booking-empty">Calendar link not configured yet.</div>
-          )}
-        </div>
-      )}
       {d.phase === 'done' && (
         <div className="chips">
           <button className="chip ghost" onClick={d.start}>{script.again}</button>
@@ -543,5 +547,5 @@ function AuditConsole({ d, script }) {
 }
 
 Object.assign(window, {
-  AUDIT_SCRIPT, BOOKING_URL, useDialogue, DotMouth, EyeGlows, FaceRig, useHeadGestures, AuditConsole,
+  AUDIT_SCRIPT, BOOKING_URL, openBookingWindow, useDialogue, DotMouth, EyeGlows, FaceRig, useHeadGestures, AuditConsole,
 });
