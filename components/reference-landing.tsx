@@ -1,5 +1,6 @@
 "use client";
 
+import { siteConfig } from "@/lib/site-config";
 import { useEffect, useRef, useState } from "react";
 
 const sectionFrames = [
@@ -367,7 +368,7 @@ export function ReferenceLanding() {
           <div className="socials">
             <a href="#" aria-label="Instagram"><IconInstagram /></a>
             <a href="#" aria-label="LinkedIn"><IconLinkedIn /></a>
-            <a href="/contact" aria-label="WhatsApp / contact"><IconWhatsApp /></a>
+            <a href={siteConfig.socials.whatsapp} target="_blank" rel="noreferrer" aria-label="WhatsApp"><IconWhatsApp /></a>
           </div>
         </div>
       </footer>

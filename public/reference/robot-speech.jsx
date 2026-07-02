@@ -60,6 +60,18 @@ const BOOKING_URL = (() => {
   }
 })();
 
+const WHATSAPP_URL = 'https://wa.me/34647294703';
+
+function openWhatsAppWindow() {
+  const message = encodeURIComponent('Hi, I just ran the quick audit and would like to talk about a simple system.');
+  const opened = (window.top || window).open(WHATSAPP_URL + '?text=' + message, 'digital-systems-whatsapp');
+  if (opened) {
+    try { opened.focus(); } catch (e) {}
+    return true;
+  }
+  return false;
+}
+
 function openBookingWindow() {
   if (!BOOKING_URL) return false;
   const w = Math.min(980, Math.max(360, (window.screen && window.screen.availWidth ? window.screen.availWidth : window.innerWidth) - 80));
@@ -218,6 +230,19 @@ function useDialogue(script, speed) {
   }, [stepIx, speak]);
 
   const finish = useCallback((opt) => {
+    if (opt && opt.id === 'whatsapp') {
+      clear();
+      stopVoice();
+      speakingRef.current.level = 0;
+      const opened = openWhatsAppWindow();
+      const text = opened
+        ? 'WhatsApp opened — send the humans your audit.'
+        : 'WhatsApp could not open. Please allow popups and try again.';
+      setLine(text);
+      setVis(text.split(/\s+/).length);
+      setPhase('done');
+      return;
+    }
     if (opt && opt.id === 'call') {
       clear();
       stopVoice();
@@ -475,5 +500,5 @@ function AuditConsole({ d, script }) {
 }
 
 Object.assign(window, {
-  AUDIT_SCRIPT, BOOKING_URL, openBookingWindow, useDialogue, DotMouth, EyeGlows, FaceRig, useHeadGestures, AuditConsole,
+  AUDIT_SCRIPT, BOOKING_URL, WHATSAPP_URL, openBookingWindow, openWhatsAppWindow, useDialogue, DotMouth, EyeGlows, FaceRig, useHeadGestures, AuditConsole,
 });
