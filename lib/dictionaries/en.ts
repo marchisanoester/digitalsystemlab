@@ -165,7 +165,6 @@ export const dictionary = {
         title: "Mortgage-eligibility calculator",
         tag: "Lead tool",
         text: "Part of a full sales-funnel automation we built: visitors learn in seconds whether they qualify and for how much, and each warm lead is routed straight to the team by WhatsApp or email.",
-        link: "View it live →",
         mockup: "calc",
       },
       {

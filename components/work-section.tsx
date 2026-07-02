@@ -173,7 +173,7 @@ export function WorkSection() {
             <BrowserFrame>
               <ToolMockup type={item.mockup} />
             </BrowserFrame>
-            <CaseMeta tag={item.tag} title={item.title} text={item.text} link={item.link} />
+            <CaseMeta tag={item.tag} title={item.title} text={item.text} />
           </article>
         ))}
       </div>
