@@ -9,12 +9,14 @@ const sectionFrames = [
   { id: "s-labs", title: "Venture Labs", src: "/reference/Section - Venture Labs.html" },
 ];
 
+const defaultBookingUrl = "https://calendar.app.google/PTFpXj6cZ84ajXDm6";
+
 export function ReferenceLanding() {
   const frameRefs = useRef<Record<string, HTMLIFrameElement | null>>({});
   const robotAudioRef = useRef<HTMLAudioElement | null>(null);
   const lastRobotVoiceRef = useRef<{ text: string; at: number } | null>(null);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const bookingUrl = process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL || "";
+  const bookingUrl = process.env.NEXT_PUBLIC_GOOGLE_BOOKING_URL || defaultBookingUrl;
 
   useEffect(() => {
     const frames = Object.values(frameRefs.current).filter(Boolean) as HTMLIFrameElement[];
