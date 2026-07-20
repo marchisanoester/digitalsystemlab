@@ -1,6 +1,6 @@
 import { Instagram, Linkedin, MessageCircle } from "lucide-react";
 import Link from "next/link";
-import { BrandDots } from "@/components/brand-dots";
+import { BrandLogo } from "@/components/brand-logo";
 import { dictionary } from "@/lib/dictionaries/en";
 import { siteConfig } from "@/lib/site-config";
 
@@ -14,9 +14,8 @@ export function Footer() {
   return (
     <footer className="bg-ink text-[#d9d9d4]">
       <div className="mx-auto flex max-w-[1180px] flex-wrap items-center justify-between gap-5 px-[clamp(20px,5vw,64px)] py-8 max-[600px]:flex-col max-[600px]:text-center">
-        <Link href="/" className="flex items-center gap-3">
-          <BrandDots />
-          <span className="font-serif text-[17px] text-bg">{siteConfig.name}</span>
+        <Link href="/" className="flex items-center">
+          <BrandLogo variant="footer" />
         </Link>
         <div className="text-center font-mono text-[11px] uppercase tracking-[0.08em] text-[#8a8a83]">
           <div>{dictionary.footer.rights}</div>

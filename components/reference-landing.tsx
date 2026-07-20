@@ -197,10 +197,8 @@ export function ReferenceLanding() {
           backdrop-filter: blur(12px);
           border-bottom: 1px solid var(--line);
         }
-        .topnav .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; cursor: pointer; }
-        .topnav .bd, .footer .bd { display: flex; gap: 4px; }
-        .topnav .bd span, .footer .bd span { width: 7px; height: 7px; border-radius: 50%; }
-        .topnav .nm { font-weight: 600; font-size: 15px; letter-spacing: -0.01em; white-space: nowrap; }
+        .topnav .brand { display: flex; align-items: center; margin-right: auto; cursor: pointer; }
+        .brand-logo { display: block; width: 132px; height: auto; }
         .topnav .links { display: flex; align-items: center; gap: 30px; }
         .topnav a, .topnav button.linkish {
           font-size: 14.5px;
@@ -269,6 +267,9 @@ export function ReferenceLanding() {
           .topnav .links { display: none; }
           .burger { display: flex; }
         }
+        @media (max-width: 420px) {
+          .brand-logo { width: 116px; }
+        }
         iframe.sec { display: block; width: 100%; border: 0; background: var(--bg); }
         iframe#s-hero { height: 100vh; height: 100svh; }
         .footer { background: var(--ink); color: #d9d9d4; }
@@ -282,8 +283,8 @@ export function ReferenceLanding() {
           max-width: 1180px;
           margin: 0 auto;
         }
-        .footer .left { display: flex; align-items: center; gap: 11px; }
-        .footer .nm { font-family: "Newsreader", serif; font-size: 17px; color: #fbfbfa; }
+        .footer .left { display: flex; align-items: center; }
+        .footer .brand-logo { width: 176px; }
         .footer .rights { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em; color: #8a8a83; }
         .footer .socials { display: flex; gap: 12px; }
         .footer .socials a {
@@ -307,12 +308,13 @@ export function ReferenceLanding() {
 
       <nav className="topnav">
         <button type="button" className="brand" onClick={() => go("s-hero")} aria-label="Home">
-          <span className="bd" aria-hidden="true">
-            <span style={{ background: "#54b394" }} />
-            <span style={{ background: "#e9674c" }} />
-            <span style={{ background: "#edbb52" }} />
-          </span>
-          <span className="nm">Digital Systems Studio</span>
+          <img
+            src={siteConfig.logo.src}
+            alt={siteConfig.name}
+            width={siteConfig.logo.width}
+            height={siteConfig.logo.height}
+            className="brand-logo"
+          />
         </button>
         <div className="links">
           <button type="button" className="linkish" onClick={() => go("s-services")}>Services</button>
@@ -357,12 +359,13 @@ export function ReferenceLanding() {
       <footer className="footer">
         <div className="inner">
           <div className="left">
-            <span className="bd" aria-hidden="true">
-              <span style={{ background: "#54b394" }} />
-              <span style={{ background: "#e9674c" }} />
-              <span style={{ background: "#edbb52" }} />
-            </span>
-            <span className="nm">Digital Systems Studio</span>
+            <img
+              src={siteConfig.logo.footerSrc}
+              alt={siteConfig.name}
+              width={siteConfig.logo.footerWidth}
+              height={siteConfig.logo.footerHeight}
+              className="brand-logo"
+            />
           </div>
           <span className="rights">© 2026 — All rights reserved</span>
           <div className="socials">

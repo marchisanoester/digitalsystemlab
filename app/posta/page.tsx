@@ -1,7 +1,7 @@
 import { PostaInbox } from "./posta-inbox";
 
 export const metadata = {
-  title: "Posta | Digital Systems Studio",
+  title: "Posta | ETNOS LAB",
 };
 
 export default function PostaPage() {

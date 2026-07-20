@@ -4,9 +4,8 @@ import { Beaker, Briefcase, Layers, Mail, Menu, User, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { BrandDots } from "@/components/brand-dots";
+import { BrandLogo } from "@/components/brand-logo";
 import { dictionary } from "@/lib/dictionaries/en";
-import { siteConfig } from "@/lib/site-config";
 
 const items = [
   { label: dictionary.nav.services, href: "/#services", icon: Layers },
@@ -23,11 +22,8 @@ export function SiteNav() {
   return (
     <>
       <nav className="sticky top-0 z-50 flex items-center gap-6 border-b border-line bg-bg/85 px-[clamp(20px,5vw,56px)] py-4 backdrop-blur-xl">
-        <Link href="/" className="mr-auto flex items-center gap-2.5" onClick={() => setOpen(false)}>
-          <BrandDots />
-          <span className="whitespace-nowrap text-[15px] font-semibold tracking-[-0.01em]">
-            {siteConfig.name}
-          </span>
+        <Link href="/" className="mr-auto flex items-center" onClick={() => setOpen(false)}>
+          <BrandLogo />
         </Link>
         <div className="flex items-center gap-[30px] max-[720px]:hidden">
           {items.map((item) => (

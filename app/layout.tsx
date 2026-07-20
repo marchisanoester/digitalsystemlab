@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Digital Systems Studio",
+  title: "ETNOS LAB",
   description: "Simple digital systems, automations, tools and small software.",
 };
 
