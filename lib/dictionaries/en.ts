@@ -236,7 +236,7 @@ export const dictionary = {
       },
       {
         number: "02",
-        name: "Esther Marchisano",
+        name: "Ester Marchisano",
         role: "Co-founder · Build & Systems",
         bio: "Developer and graphic / web designer with deep experience in tourism — from hotel management to building digital products for travel structures and processes.",
         image: "/assets/esther.jpg",

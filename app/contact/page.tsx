@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Mail, MessageCircle } from "lucide-react";
 import Link from "next/link";
 import { Eyebrow } from "@/components/eyebrow";
@@ -5,6 +6,12 @@ import { Footer } from "@/components/footer";
 import { SiteNav } from "@/components/site-nav";
 import { buttonVariants } from "@/components/ui/button";
 import { dictionary } from "@/lib/dictionaries/en";
+
+export const metadata: Metadata = {
+  title: "Contact ETNOS LAB | Automation, Web Development & Digital Solutions",
+  description:
+    "Contact ETNOS LAB to discuss websites, custom software, AI automation systems and digital experiences that streamline operations and support business growth.",
+};
 
 export default function ContactPage() {
   const { contact } = dictionary;
