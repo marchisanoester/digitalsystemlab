@@ -284,7 +284,7 @@ export function ReferenceLanding() {
           margin: 0 auto;
         }
         .footer .left { display: flex; align-items: center; }
-        .footer .brand-logo { width: 176px; }
+        .footer .brand-logo { width: 200px; }
         .footer .rights { font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: 0.08em; color: #8a8a83; }
         .footer .socials { display: flex; gap: 12px; }
         .footer .socials a {

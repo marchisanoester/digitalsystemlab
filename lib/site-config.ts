@@ -3,8 +3,8 @@ export const siteConfig = {
   logo: {
     src: "/assets/etnos-lab.png",
     footerSrc: "/assets/etnos-lab-white.png",
-    width: 922,
-    height: 281,
+    width: 1072,
+    height: 384,
     footerWidth: 1072,
     footerHeight: 384,
   },
