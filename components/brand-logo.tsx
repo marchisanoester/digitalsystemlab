@@ -9,7 +9,7 @@ export function BrandLogo({ variant = "nav" }: BrandLogoProps) {
   const size =
     isFooter
       ? "h-auto w-[176px] max-[600px]:w-[164px]"
-      : "h-auto w-[132px] max-[420px]:w-[116px]";
+      : "h-auto w-[180px] max-[420px]:w-[150px]";
 
   return (
     <img

@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ETNOS LAB",
-  description: "Simple digital systems, automations, tools and small software.",
+  title: "ETNOS LAB | AI Automation, Web Development & Digital Solutions",
+  description:
+    "ETNOS LAB creates modern websites, custom software, automation systems and digital experiences that help businesses simplify processes, improve efficiency and grow.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

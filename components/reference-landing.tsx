@@ -198,7 +198,7 @@ export function ReferenceLanding() {
           border-bottom: 1px solid var(--line);
         }
         .topnav .brand { display: flex; align-items: center; margin-right: auto; cursor: pointer; }
-        .brand-logo { display: block; width: 132px; height: auto; }
+        .brand-logo { display: block; width: 180px; height: auto; }
         .topnav .links { display: flex; align-items: center; gap: 30px; }
         .topnav a, .topnav button.linkish {
           font-size: 14.5px;
@@ -268,7 +268,7 @@ export function ReferenceLanding() {
           .burger { display: flex; }
         }
         @media (max-width: 420px) {
-          .brand-logo { width: 116px; }
+          .brand-logo { width: 150px; }
         }
         iframe.sec { display: block; width: 100%; border: 0; background: var(--bg); }
         iframe#s-hero { height: 100vh; height: 100svh; }
